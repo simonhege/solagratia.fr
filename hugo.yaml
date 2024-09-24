@@ -1,0 +1,31 @@
+baseURL: https://www.solagratia.fr/
+languageCode: 'fr-fr'
+title: 'Sola Gratia'
+theme: 'PaperMod'
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON 
+
+params:
+  disableThemeToggle: true
+  assets:
+    disableHLJS: true
+  profileMode:
+    enabled: true
+    subtitle: "Explorez la Bible avec une perspective nouvelle"
+    imageUrl: "android-chrome-512x512.png"
+  socialIcons:
+  - name: "x"
+    url: "https://x.com/solagratia_fr"
+  - name: "instagram"
+    url: "https://instagram.com/solagratia_fr"
+  - name: "tiktok"
+    url: "https://tiktok.com/@solagratia_fr"
+  - name: "email"
+    url: "mailto:simon@solagratia.fr"
+  - name: "github"
+    url: "https://github.com/simonhege/solagratia.fr"
+
