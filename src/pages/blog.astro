@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+
+import Layout from '../layouts/Layout.astro';
+
+import BlogPostCard from '../components/blog/BlogPostCard.astro';
+import CategoryLink from '../components/blog/CategoryLink.astro';
+
+const allBlogPosts = await getCollection('blog');
+const sortedBlogPosts = allBlogPosts.sort((a, b) => (+b.data.pubDate - +a.data.pubDate))
+
+const categories = new Set<string>();
+allBlogPosts.forEach(p => {
+  p.data.categories.forEach(c => categories.add(c))
+})
+
+const sortedCategories = Array.from(categories).sort();
+
+---
+
+<Layout title="Blog de Sola Gratia">
+  <div class="p-4 max-w-5xl mx-auto">
+    <h1 class="mb-4 font-extrabold text-[#111827] text-4xl xl:text-5xl">Blog de Sola Gratia</h1>
+
+    <h2 class="mb-3 font-bold text-[#111827] text-2xl xl:text-2xl">Les derniers billets</h2>
+
+    <div class="grid grid-cols-1 gap-2">
+      {
+        sortedBlogPosts.map(post => (
+          <BlogPostCard post={post} />
+        ))
+      }
+    </div>
+    
+
+    <h2 class="mt-6 mb-3 font-bold text-[#111827] text-2xl xl:text-2xl">Explorer les catégories</h2>
+    <ul class="flex space-x-4">
+      { sortedCategories.map(c => (
+        <li><CategoryLink name={c}/></li>
+      ))}
+    </ul>
+
+  </div>
+</Layout>

@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import BlogPostCard from '../../../components/blog/BlogPostCard.astro';
+
+export async function getStaticPaths() {
+  
+  const allBlogPosts = await getCollection('blog');
+  const categories = new Set<string>();
+  allBlogPosts.forEach(p => {
+    p.data.categories.forEach(c => categories.add(c)); 
+  });
+  return Array.from(categories).map(c => (
+    {params: {category: c}}
+  ));
+}
+
+const { category } = Astro.params;
+
+
+const allBlogPosts = await getCollection('blog');
+const sortedBlogPosts = allBlogPosts
+  .filter(p => p.data.categories.includes(category))
+  .sort((a, b) => (+b.data.pubDate - +a.data.pubDate))
+
+---
+<Layout title={category}>
+  <div class="p-4 max-w-5xl mx-auto">
+    <h1 class="mb-4 font-extrabold text-[#111827] text-4xl xl:text-5xl">Blog de Sola Gratia</h1>
+
+    <h2 class="mb-3 font-bold text-[#111827] text-2xl xl:text-2xl">Billets dans la catégorie "{category}"</h2>
+
+    <div class="grid grid-cols-1 gap-2">
+      {
+        sortedBlogPosts.map(post => (
+          <BlogPostCard post={post} />
+        ))
+      }
+    </div>
+</Layout>

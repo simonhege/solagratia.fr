@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const nom = 'Simon HEGE'
+const email = 'simon@solagratia.fr';
+---
+
+<Layout title="Mentions légales">
+  <div class="p-4 prose lg:prose-xl mx-auto">
+
+    <h2>Mentions légales</h2>
+
+    <h2>1. Éditeur du site</h2>
+    <p>Nom : {nom}<br>
+    E-mail : <a href="mailto:{email}">{email}</a></p>
+
+    <h2>2. Hébergement</h2>
+    <p>Hébergeur : GitHub, Inc.<br>
+      Adresse : 88 Colin P. Kelly Jr St, San Francisco, CA 94107, États-Unis<br>
+      Site web de l'hébergeur : <a href="https://pages.github.com/" target="_blank">https://pages.github.com/</a></p>
+
+    <h2>3. Propriété intellectuelle</h2>
+    
+    <p>Sauf mention contraire, les contenus présents sur ce site (textes, images, vidéos, etc.) sont sous licence Creative  
+      Commons Attribution - NonCommercial - ShareAlike (CC BY-NC-SA). Cela signifie que vous êtes libres de partager 
+      et d'adapter ces contenus à des fins non commerciales, à condition de citer l'auteur original et de partager les 
+      œuvres dérivées sous la même licence.</p>
+    <p>Pour plus d'informations sur cette licence, vous pouvez consulter le site officiel de 
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">Creative Commons</a>.</p>
+
+    <h2>4. Données personnelles</h2>
+    <p>Les informations recueillies via les formulaires de contact sont traitées par Simon HEGE dans le cadre de vos demandes. 
+      Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, et de suppression de vos données en nous contactant à l'adresse : 
+      <a href="mailto:{email}">{email}</a>.</p>
+
+    <h2>5. Cookies</h2>
+    <p>Ce site n'utilise pas de cookies.</p>
+
+    <p class="small">Dernière mise à jour : 19 octobre 2024</p>
+  </div>
+</Layout>

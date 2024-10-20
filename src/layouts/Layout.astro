@@ -1,0 +1,53 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+
+import NavBar from '../components/NavBar.astro';
+---
+
+<!doctype html>
+<html lang="fr">
+	<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index, follow">
+		<meta name="generator" content={Astro.generator} />
+    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+		<link
+				rel="alternate"
+				type="application/rss+xml"
+				title="Blog de SolaGratia.fr"
+				href={new URL("feed.xml", Astro.site)}
+		/>
+		<title>{title}</title>
+	</head>
+	<body class="antialiased bg-gradient-to-r from-neutral-100 to-neutral-200">
+		<div class="container mx-auto">
+			<NavBar/>
+				
+			<slot />
+
+			<div class="text-center py-4">
+				<p>&copy; 2024 <a class="hover:underline" href="https://www.solagratia.fr">Sola Gratia</a> - 
+				<a class="hover:underline" href="/mentions-legales">Mentions légales</a></p>
+			</div>
+		</div>
+	</body>
+</html>
+
+<script is:inline>
+	var payload = {
+		screen: window.screen.width + 'x' + window.screen.height,
+		language: window.navigator.language,
+		hostname: window.location.hostname,
+		pathname: window.location.pathname,
+	};
+	console.log("Page viewed", payload)
+</script>
