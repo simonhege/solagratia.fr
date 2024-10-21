@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 
 const nom = 'Simon HEGE'
 const email = 'simon@solagratia.fr';
+const pubDate = '21 octobre 2024';
 ---
 
 <Layout title="Mentions légales">
@@ -37,7 +38,7 @@ const email = 'simon@solagratia.fr';
     <h2>5. Cookies</h2>
     <p>Ce site n'utilise pas de cookies.</p>
 
-    <p class="text-sm">Dernière mise à jour des mentions légales: 19 octobre 2024</p>
+    <p class="text-sm">Dernière mise à jour des mentions légales: {pubDate}</p>
 
     <p class="text-sm">Version de l'api : <span id="apiVersion">undefined</span><br />Modèle AI : <span id="genAiModel">undefined</span></p>
   </div>
