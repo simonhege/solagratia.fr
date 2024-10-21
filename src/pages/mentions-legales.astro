@@ -15,9 +15,9 @@ const email = 'simon@solagratia.fr';
     E-mail : <a href="mailto:{email}">{email}</a></p>
 
     <h2>2. Hébergement</h2>
-    <p>Hébergeur : GitHub, Inc.<br>
-      Adresse : 88 Colin P. Kelly Jr St, San Francisco, CA 94107, États-Unis<br>
-      Site web de l'hébergeur : <a href="https://pages.github.com/" target="_blank">https://pages.github.com/</a></p>
+    <p>Hébergeur : Scaleway SAS<br>
+      Adresse : BP 438 75366 PARIS CEDEX 08 FRANCE<br>
+      Site web de l'hébergeur : <a href="https://www.scaleway.com/" target="_blank">https://www.scaleway.com/</a></p>
 
     <h2>3. Propriété intellectuelle</h2>
     
@@ -29,6 +29,7 @@ const email = 'simon@solagratia.fr';
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">Creative Commons</a>.</p>
 
     <h2>4. Données personnelles</h2>
+    <p>Vous pouvez visiter notre site sur Internet sans avoir à décliner votre identité ou à fournir des informations personnelles vous concernant. </p>
     <p>Les informations recueillies via les formulaires de contact sont traitées par Simon HEGE dans le cadre de vos demandes. 
       Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, et de suppression de vos données en nous contactant à l'adresse : 
       <a href="mailto:{email}">{email}</a>.</p>
@@ -36,6 +37,31 @@ const email = 'simon@solagratia.fr';
     <h2>5. Cookies</h2>
     <p>Ce site n'utilise pas de cookies.</p>
 
-    <p class="small">Dernière mise à jour : 19 octobre 2024</p>
+    <p class="text-sm">Dernière mise à jour des mentions légales: 19 octobre 2024</p>
+
+    <p class="text-sm">Version de l'api : <span id="apiVersion">undefined</span><br />Modèle AI : <span id="genAiModel">undefined</span></p>
   </div>
 </Layout>
+
+<script>
+  const myRequest = new Request("https://api.solagratia.fr/info");
+  const apiVersion = document.getElementById("apiVersion");
+  const genAiModel = document.getElementById("genAiModel");
+  window
+    .fetch(myRequest)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((response) => {
+      if (apiVersion) {
+        apiVersion.textContent = response.version.lastCommit + ' ' + response.version.revision.substr(0, 8);
+      }
+      if (genAiModel) {
+        genAiModel.textContent = response.genModel;
+      }
+      console.log(response);
+    });
+</script>
