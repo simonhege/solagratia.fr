@@ -42,12 +42,21 @@ import NavBar from '../components/NavBar.astro';
 	</body>
 </html>
 
-<script is:inline>
+<script>
 	var payload = {
 		screen: window.screen.width + 'x' + window.screen.height,
 		language: window.navigator.language,
 		hostname: window.location.hostname,
 		pathname: window.location.pathname,
 	};
-	console.log("Page viewed", payload)
+	const req = new Request("https://api.solagratia.fr/pageViewed", {
+		method: 'POST',
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(payload)
+	});
+	window.fetch(req).finally(() => {
+		console.log("Page viewed", payload);
+	});
 </script>
