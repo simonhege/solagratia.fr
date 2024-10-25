@@ -6,7 +6,8 @@
   <div class="w-full max-w-prose mx-auto mb-6">
     <form class="w-full flex gap-4 " onsubmit={handleQuestion}>
       <input type="text" class="rounded-md shadow-lg w-full" name="question"
-        autocomplete="off" required minlength="5"
+        autocomplete="off" required minlength="5" maxlength="300"
+        placeholder="Ici votre question"
       />
       <button type="submit" aria-label="Send">
           <svg 
@@ -32,12 +33,16 @@
     </p>
   </div>
   <div class="min-h-[calc(100vh-256px)]">
+    {#if message.length > 0}
+    <p class="max-w-prose mx-auto text-center mb-4">
+      {message}
+    </p>
+    {/if}
     {#each versets as verset}
         <figure class="mt-4 bg-white block shadow-lg border-gray-600 rounded p-3">
             <blockquote class="border-l-2 pl-2">{verset.text}</blockquote>
             <figcaption>{verset.ref}</figcaption>
         </figure>
-    
     {/each}
   </div>
   <div>
@@ -50,6 +55,7 @@
 
 <script lang="ts">
 
+  let message = $state("");
   let loading = $state(false);
   let displayError = $state(false);
 
@@ -63,13 +69,14 @@
     e.preventDefault();
     loading = true;
     displayError = false;
+    message = "";
     versets = [];
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const payload = {
       "question": formData.get("question"),
     }
     const req = new Request("https://api.solagratia.fr/explorer", {
-			method: 'POST',
+      method: 'POST',
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -86,6 +93,11 @@
       .then((response) => {
         console.log(payload, response);
         versets = response;
+        if (versets.length == 0) {
+          message = "Je suis désolé, mais je ne peux pas répondre à cette question.";
+        } else {
+          message = "Voici quelques passages de la Bible pour vous :";
+        }
       })
       .catch((error) => {
         displayError = true
