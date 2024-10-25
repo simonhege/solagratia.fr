@@ -8,6 +8,8 @@ import tailwind from '@astrojs/tailwind';
 import { rehypeHeadingIds } from '@astrojs/markdown-remark';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
+import svelte from '@astrojs/svelte';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.solagratia.fr',
@@ -16,7 +18,7 @@ export default defineConfig({
   prefetch: {
     prefetchAll: true,
   },
-  integrations: [sitemap(), tailwind()],
+  integrations: [sitemap(), tailwind(), svelte()],
   markdown: {
     rehypePlugins: [
       rehypeHeadingIds, 
