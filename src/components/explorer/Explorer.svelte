@@ -41,15 +41,18 @@
     {#each versets as verset}
         <figure class="mt-4 bg-white block shadow-lg border-gray-600 rounded p-3">
             <blockquote class="border-l-2 pl-2">{verset.text}</blockquote>
-            <figcaption>{verset.ref}</figcaption>
+            <figcaption>
+              <a class="hover:underline" href={"/bible#/"+verset.reference.bookCode+"/"+verset.reference.chapter}>{refString(verset.reference)}</a>
+            </figcaption>
         </figure>
     {/each}
   </div>
   <div>
-    <p class="text-sm text-gray-500 max-w-prose mx-auto text-center mb-4">
+    <p class="text-sm text-gray-500 max-w-prose mx-auto text-center my-6">
+      Textes bibliques tiré de la <em>Bible Louis Segond (1910)</em>. Domaine public.  <br />
       L'intelligence artificielle est un outil puissant, mais elle peut se tromper. <br />
       Vérifiez toujours les informations fournies.
-  </p>
+    </p>
   </div>
 </div>
 
@@ -59,10 +62,22 @@
   let loading = $state(false);
   let displayError = $state(false);
 
+  type versetReference = {
+    bookCode: string,
+    bookName: string,
+    chapter: number,
+    verseStart: number,
+    verseEnd: number,
+  }
   type verset = {
     text: string,
     ref: string,
+    reference: versetReference
   }
+  function refString(ref: versetReference) :string {
+    return ref.bookName + ' ' + ref.chapter + '.' + ref.verseStart + (ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : '');
+  }
+
   let versets: verset[] = $state([])
 
   async function handleQuestion(e: SubmitEvent) {
