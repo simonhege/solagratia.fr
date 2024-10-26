@@ -32,7 +32,7 @@
       Parfois, même les serveurs ont besoin de repos. Revenez bientôt, et peut-être que tout sera remis en ordre. 
     </p>
   </div>
-  <div class="min-h-[calc(100vh-256px)]">
+  <div class="min-h-[calc(100vh-400px)]">
     {#if message.length > 0}
     <p class="max-w-prose mx-auto text-center mb-4">
       {message}
@@ -49,7 +49,7 @@
   </div>
   <div>
     <p class="text-sm text-gray-500 max-w-prose mx-auto text-center my-6">
-      Textes bibliques tiré de la <em>Bible Louis Segond (1910)</em>. Domaine public.  <br />
+      Textes bibliques issus de la <em>Bible Louis Segond (1910)</em>. Domaine public.  <br />
       L'intelligence artificielle est un outil puissant, mais elle peut se tromper. <br />
       Vérifiez toujours les informations fournies.
     </p>
