@@ -46,9 +46,8 @@ import NavBar from '../components/NavBar.astro';
 	if (!localStorage.getItem("do-not-track")) {
 		var payload = {
 			screen: window.screen.width + 'x' + window.screen.height,
-			language: window.navigator.language,
-			hostname: window.location.hostname,
-			pathname: window.location.pathname,
+			lang: window.navigator.language,
+			page: window.location.pathname,
 		};
 		const req = new Request("https://api.solagratia.fr/pageViewed", {
 			method: 'POST',
