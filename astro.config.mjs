@@ -15,10 +15,15 @@ export default defineConfig({
   site: 'https://www.solagratia.fr',
   output: 'static',
   trailingSlash: 'never',
+  build : {
+    format: 'preserve'
+  },
   prefetch: {
     prefetchAll: true,
   },
-  integrations: [sitemap(), tailwind(), svelte()],
+  integrations: [sitemap({
+    filter: (page) => page.indexOf('/admin/') < 0,
+  }), tailwind(), svelte()],
   markdown: {
     rehypePlugins: [
       rehypeHeadingIds, 
