@@ -15,9 +15,6 @@ export default defineConfig({
   site: 'https://www.solagratia.fr',
   output: 'static',
   trailingSlash: 'never',
-  build : {
-    format: 'preserve'
-  },
   prefetch: {
     prefetchAll: true,
   },
