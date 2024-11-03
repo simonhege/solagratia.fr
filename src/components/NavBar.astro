@@ -34,6 +34,11 @@ import Image from "astro/components/Image.astro"
         md:justify-between
         md:pt-0"
     >
+    <li id="adminLink" class="hidden">
+      <a class="md:p-4 py-2 block hover:underline" href="/admin"
+        >Admin</a
+      >
+    </li>
     <li>
       <a class="md:p-4 py-2 block hover:underline" href="/explorer"
         >Explorer la Bible</a
@@ -61,5 +66,10 @@ import Image from "astro/components/Image.astro"
         menu.classList.add("hidden");
       }
     });
+  }
+  const showAdmin = (localStorage.getItem('show-admin') === 'true') 
+  if (showAdmin) {
+    const adminLink = document.getElementById('adminLink');
+    adminLink?.classList.remove('hidden');
   }
 </script>
