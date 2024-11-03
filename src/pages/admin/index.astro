@@ -1,8 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
+import AdminComponent from '../../components/admin/Admin.svelte'
 ---
 
 <Layout title="Admin">
-	<h2>Page en cours de constrution</h2>
+  <AdminComponent client:only="svelte" />
 </Layout>
