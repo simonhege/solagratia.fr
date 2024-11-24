@@ -38,11 +38,11 @@
       {message}
     </p>
     {/if}
-    {#each versets as verset}
+    {#each verses as verse}
         <figure class="mt-4 bg-white block shadow-lg border-gray-600 rounded p-3">
-            <blockquote class="border-l-2 pl-2">{verset.text}</blockquote>
+            <blockquote class="border-l-2 pl-2">{verse.text}</blockquote>
             <figcaption>
-              <a class="hover:underline" href={"/bible#/"+verset.reference.bookCode+"/"+verset.reference.chapter}>{refString(verset.reference)}</a>
+              <a class="hover:underline" href={"/bible#/"+verse.reference.bookCode+"/"+verse.reference.chapter}>{refString(verse.reference)}</a>
             </figcaption>
         </figure>
     {/each}
@@ -62,30 +62,29 @@
   let loading = $state(false);
   let displayError = $state(false);
 
-  type versetReference = {
+  type verseReference = {
     bookCode: string,
     bookName: string,
     chapter: number,
     verseStart: number,
     verseEnd: number,
   }
-  type verset = {
+  type verse = {
     text: string,
-    ref: string,
-    reference: versetReference
+    reference: verseReference
   }
-  function refString(ref: versetReference) :string {
+  function refString(ref: verseReference) :string {
     return ref.bookName + ' ' + ref.chapter + '.' + ref.verseStart + (ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : '');
   }
 
-  let versets: verset[] = $state([])
+  let verses: verse[] = $state([])
 
   async function handleQuestion(e: SubmitEvent) {
     e.preventDefault();
     loading = true;
     displayError = false;
     message = "";
-    versets = [];
+    verses = [];
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const payload = {
       "question": formData.get("question"),
@@ -107,8 +106,8 @@
       })
       .then((response) => {
         console.log(payload, response);
-        versets = response;
-        if (versets.length == 0) {
+        verses = response;
+        if (verses.length == 0) {
           message = "Je suis désolé, mais je ne peux pas répondre à cette question.";
         } else {
           message = "Voici quelques passages de la Bible pour vous :";
