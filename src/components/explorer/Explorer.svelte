@@ -106,7 +106,7 @@
       })
       .then((response) => {
         console.log(payload, response);
-        verses = response;
+        verses = response.verses;
         if (verses.length == 0) {
           message = "Je suis désolé, mais je ne peux pas répondre à cette question.";
         } else {
