@@ -43,6 +43,7 @@
             <blockquote class="border-l-2 pl-2">{verse.text}</blockquote>
             <figcaption>
               <a class="hover:underline" href={"/bible#/"+verse.reference.bookCode+"/"+verse.reference.chapter}>{refString(verse.reference)}</a>
+              <a class="hover:underline float-end" href={"/partager#/"+toHash(verse.reference)}>Partager</a>
             </figcaption>
         </figure>
     {/each}
@@ -75,6 +76,9 @@
   }
   function refString(ref: verseReference) :string {
     return ref.bookName + ' ' + ref.chapter + '.' + ref.verseStart + (ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : '');
+  }
+  function toHash(ref: verseReference) :string {
+    return ref.bookCode + '/' + ref.chapter + '/' + ref.verseStart + (ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : '');
   }
 
   let verses: verse[] = $state([])
