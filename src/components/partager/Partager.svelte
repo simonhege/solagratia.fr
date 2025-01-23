@@ -4,9 +4,26 @@
   <h2>{message}</h2>
   {:else}
   <h2>Partager {refString(content.response.verses.reference)}</h2>
-  <img src={content.response.imageUrl} alt={content.response.alt} />
-  <textarea class="w-full" rows="3" readonly>{content.response.tags.join(' ')}</textarea>
-  <textarea class="w-full" rows="5" readonly>{content.response.alt}</textarea>
+  <img src={content.response.images[content.selected].imageUrl} alt={content.response.images[content.selected].alt} />
+  <textarea class="w-full" rows="3" readonly>{content.response.images[content.selected].tags.join(' ')}</textarea>
+  <textarea class="w-full" rows="5" readonly>{content.response.images[content.selected].alt}</textarea>
+  <div class="flex flex-wrap justify-center gap-1">
+    <div class="flex-1">
+      <button onclick={()=>(content.selected = (content.selected+1)%4)}>
+        <img src={content.response.images[(content.selected+1)%4].imageUrl} alt={content.response.images[(content.selected+1)%4].alt} />
+      </button>
+    </div>
+    <div class="flex-1">
+      <button onclick={()=>(content.selected = (content.selected+2)%4)}>
+        <img src={content.response.images[(content.selected+2)%4].imageUrl} alt={content.response.images[(content.selected+2)%4].alt} />
+      </button>
+    </div>
+    <div class="flex-1">
+      <button onclick={()=>(content.selected = (content.selected+3)%4)}>
+        <img src={content.response.images[(content.selected+3)%4].imageUrl} alt={content.response.images[(content.selected+3)%4].alt} />
+      </button>
+    </div>
+  </div>
   <div>
     <p class="text-sm text-gray-500 max-w-prose mx-auto text-center my-6">
       Texte biblique tiré de la <em>Bible Louis Segond (1910)</em>. Domaine public. 
@@ -34,24 +51,31 @@
   type ShareRequestType = {
     reference: BibleRefType,
     backgroundName?: string,
+    count?: number,
   }
   type BibleExcerptType = {
     text: string,
     reference: BibleRefType,
   }
-  type ShareResponseType = {
+  type ShareImage = {
     imageUrl: string,
     alt: string,
     tags: string[],
+  }
+  type ShareResponseType = {
     verses: BibleExcerptType,
+    images: ShareImage[],
   }
   type ContentType = {
     response?: ShareResponseType,
+    selected: number
   };
 
-  let content : ContentType = $state({});
+  let content : ContentType = $state({
+    selected: 0,
+  });
 
-  function refString(ref: verseReference) :string {
+  function refString(ref: BibleRefType) :string {
     return ref.bookName + ' ' + ref.chapter + '.' + ref.verseStart + (ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : '');
   }
 
@@ -73,6 +97,7 @@
         verseStart: parseInt(match[3]),
         verseEnd: match[5] ? parseInt(match[5]) : parseInt(match[3]),
       },
+      count: 4,
     }
     console.log(payload);
     const req = new Request("https://api.solagratia.fr/share", {
@@ -91,7 +116,10 @@
         })
         .then((resp: ShareResponseType) => {
           content.response = resp;
+          content.selected = 0;
           message = "";
+          
+          console.log(content.response.images);
         })
         .catch((error) => {
           message = "Impossible d'illustrer le passage demandé."
