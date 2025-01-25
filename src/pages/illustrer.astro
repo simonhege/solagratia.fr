@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+import IllustrerComponent from '../components/illustrer/Illustrer.svelte';
+---
+<Layout title={'Illustrer la bible'}>
+  <IllustrerComponent client:only="svelte" />
+</Layout>

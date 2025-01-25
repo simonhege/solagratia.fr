@@ -3,29 +3,29 @@
   {#if message || !content.response}
   <h2>{message}</h2>
   {:else}
-  <h2>Partager {refString(content.response.verses.reference)}</h2>
-  <img src={content.response.images[content.selected].imageUrl} alt={content.response.images[content.selected].alt} />
-  <textarea class="w-full" rows="3" readonly>{content.response.images[content.selected].tags.join(' ')}</textarea>
-  <textarea class="w-full" rows="5" readonly>{content.response.images[content.selected].alt}</textarea>
-  <div class="flex flex-wrap justify-center gap-1">
-    <div class="flex-1">
-      <button onclick={()=>(content.selected = (content.selected+1)%4)}>
-        <img src={content.response.images[(content.selected+1)%4].imageUrl} alt={content.response.images[(content.selected+1)%4].alt} />
-      </button>
-    </div>
-    <div class="flex-1">
-      <button onclick={()=>(content.selected = (content.selected+2)%4)}>
-        <img src={content.response.images[(content.selected+2)%4].imageUrl} alt={content.response.images[(content.selected+2)%4].alt} />
-      </button>
-    </div>
-    <div class="flex-1">
-      <button onclick={()=>(content.selected = (content.selected+3)%4)}>
-        <img src={content.response.images[(content.selected+3)%4].imageUrl} alt={content.response.images[(content.selected+3)%4].alt} />
-      </button>
-    </div>
-  </div>
+  <h2>Illustrer {refString(content.response.verses.reference)}</h2>
+  <blockquote>
+    {content.response.verses.text}
+  </blockquote>
   <p>
-    <a href={"/illustrer#/" + hash(content.response.verses.reference)}>Obtenir des prompts additionels</a>
+    <a href={"/partager#/" + hash(content.response.verses.reference)}>Partager</a>
+  </p>
+  <h3>Mots clés</h3>
+  <p>
+    {#each content.response.keywords as keyword}
+      <span class="bg-white px-2 py-1 rounded-lg m-1">{keyword}</span>
+    {/each}
+  </p>
+  <h3>Propositions de prompt</h3>
+  {#each content.response.prompts as prompt}
+    <textarea class="w-full" rows="3" readonly>{prompt}</textarea>
+    <p>
+      <button  class="bg-white hover:bg-gray-100 text-gray-800 text-sm py-2 px-2 border border-gray-400 rounded shadow" onclick={() => writeClipboardText(prompt)}>Copier</button>
+      <a class="bg-white hover:bg-gray-100 text-gray-800  text-sm py-2 px-2 border border-gray-400 rounded shadow no-underline" href={"https://chatgpt.com?prompt="+prompt} target="_blank">Ouvrir dans ChatGPT (Dall-E)</a>
+    </p>
+  {/each}
+  <p>
+    <a href="https://designer.microsoft.com/image-creator?scenario=background-texttoimage" target="_blank">Ouvrir Microsoft Designer</a>
   </p>
   <div>
     <p class="text-sm text-gray-500 max-w-prose mx-auto text-center my-6">
@@ -34,7 +34,6 @@
   </div>
   {/if}
 </div>
-
 <script lang="ts">
   let message = $state("Chargement en cours ...");
   let lastHash = '';
@@ -43,6 +42,13 @@
       illustrate(window.location.hash);
     }
   });
+  async function writeClipboardText(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
 
   type BibleRefType = {
     bookCode: string,
@@ -51,31 +57,23 @@
     verseStart: number,
     verseEnd: number,
   }
-  type ShareRequestType = {
+  type IllustrateRequestType = {
     reference: BibleRefType,
-    backgroundName?: string,
-    count?: number,
   }
   type BibleExcerptType = {
     text: string,
     reference: BibleRefType,
   }
-  type ShareImage = {
-    imageUrl: string,
-    alt: string,
-    tags: string[],
-  }
-  type ShareResponseType = {
+  type IllustrateResponseType = {
     verses: BibleExcerptType,
-    images: ShareImage[],
+    keywords: string[],
+    prompts: string[],
   }
   type ContentType = {
-    response?: ShareResponseType,
-    selected: number
+    response?: IllustrateResponseType,
   };
 
   let content : ContentType = $state({
-    selected: 0,
   });
 
   function refString(ref: BibleRefType) :string {
@@ -97,17 +95,16 @@
       console.log(fragment)
       return;
     }
-    const payload: ShareRequestType = {
+    const payload: IllustrateRequestType = {
       reference: {
         bookCode: match[1],
         chapter: parseInt(match[2]),
         verseStart: parseInt(match[3]),
         verseEnd: match[5] ? parseInt(match[5]) : parseInt(match[3]),
       },
-      count: 4,
     }
     console.log(payload);
-    const req = new Request("https://api.solagratia.fr/share", {
+    const req = new Request("https://api.solagratia.fr/illustrate", {
       method: 'POST',
 			headers: {
 				"Content-Type": "application/json",
@@ -121,9 +118,8 @@
           }
           return response.json();
         })
-        .then((resp: ShareResponseType) => {
+        .then((resp: IllustrateResponseType) => {
           content.response = resp;
-          content.selected = 0;
           message = "";
         })
         .catch((error) => {
@@ -135,3 +131,4 @@
   illustrate(window.location.hash);
 
 </script>
+
