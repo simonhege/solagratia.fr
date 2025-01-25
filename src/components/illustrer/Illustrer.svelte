@@ -1,7 +1,15 @@
 
 <div class="p-4 min-h-[calc(100vh-128px)] prose xl:prose-lg mx-auto">
-  {#if message || !content.response}
+  {#if message}
   <h2>{message}</h2>
+  {:else if !content.response}
+  <h2>Illustrer {refString(content.excerpt.reference)}</h2>
+  <blockquote>
+    {content.excerpt.text}
+  </blockquote>
+  <p>
+    <a href={"/partager#/" + hash(content.excerpt.reference)}>Partager</a>
+  </p>
   {:else}
   <h2>Illustrer {refString(content.response.verses.reference)}</h2>
   <blockquote>
@@ -24,6 +32,7 @@
       <a class="bg-white hover:bg-gray-100 text-gray-800  text-sm py-2 px-2 border border-gray-400 rounded shadow no-underline" href={"https://chatgpt.com?prompt="+prompt} target="_blank">Ouvrir dans ChatGPT (Dall-E)</a>
     </p>
   {/each}
+  {/if}
   <p>
     <a href="https://designer.microsoft.com/image-creator?scenario=background-texttoimage" target="_blank">Ouvrir Microsoft Designer</a>
   </p>
@@ -32,7 +41,6 @@
       Texte biblique tiré de la <em>Bible Louis Segond (1910)</em>. Domaine public. 
     </p>
   </div>
-  {/if}
 </div>
 <script lang="ts">
   let message = $state("Chargement en cours ...");
@@ -70,6 +78,7 @@
     prompts: string[],
   }
   type ContentType = {
+    excerpt?: BibleExcerptType,
     response?: IllustrateResponseType,
   };
 
@@ -95,6 +104,23 @@
       console.log(fragment)
       return;
     }
+
+    await window.fetch("https://api.solagratia.fr/bible/" + fragment.substring(2))
+      .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((resp: BibleExcerptType) => {
+          content.excerpt = resp;
+          message = "";
+        })
+        .catch((error) => {
+          message = "Impossible de trouver le passage demandé."
+          console.log(fragment, error);
+        });
+        
     const payload: IllustrateRequestType = {
       reference: {
         bookCode: match[1],

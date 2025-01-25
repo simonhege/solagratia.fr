@@ -1,10 +1,20 @@
 
 <div class="p-4 min-h-[calc(100vh-128px)] prose xl:prose-lg mx-auto">
-  {#if message || !content.response}
+  {#if message}
   <h2>{message}</h2>
+  {:else if !content.response}
+  <h2>Partager {refString(content.excerpt.reference)}</h2>
+  <div class="rounded w-full pb-[100%] bg-gradient-to-br from-gray-300 to-pink-300 animate-pulse ">
+    <div class="absolute inset-0 flex items-center justify-center ">
+      <p class="text-2xl text-gray-500 w-96 text-center">{content.excerpt.text}</p>
+    </div>
+  </div>
+  <p>
+    <a href={"/illustrer#/" + hash(content.excerpt.reference)}>Obtenir des prompts additionels</a>
+  </p>
   {:else}
   <h2>Partager {refString(content.response.verses.reference)}</h2>
-  <img src={content.response.images[content.selected].imageUrl} alt={content.response.images[content.selected].alt} />
+  <img class="rounded" src={content.response.images[content.selected].imageUrl} alt={content.response.images[content.selected].alt} />
   <textarea class="w-full" rows="3" readonly>{content.response.images[content.selected].tags.join(' ')}</textarea>
   <textarea class="w-full" rows="5" readonly>{content.response.images[content.selected].alt}</textarea>
   <div class="flex flex-wrap justify-center gap-1">
@@ -27,12 +37,12 @@
   <p>
     <a href={"/illustrer#/" + hash(content.response.verses.reference)}>Obtenir des prompts additionels</a>
   </p>
+  {/if}
   <div>
     <p class="text-sm text-gray-500 max-w-prose mx-auto text-center my-6">
       Texte biblique tiré de la <em>Bible Louis Segond (1910)</em>. Domaine public. 
     </p>
   </div>
-  {/if}
 </div>
 
 <script lang="ts">
@@ -70,6 +80,7 @@
     images: ShareImage[],
   }
   type ContentType = {
+    excerpt?: BibleExcerptType,
     response?: ShareResponseType,
     selected: number
   };
@@ -97,6 +108,23 @@
       console.log(fragment)
       return;
     }
+
+    await window.fetch("https://api.solagratia.fr/bible/" + fragment.substring(2))
+      .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((resp: BibleExcerptType) => {
+          content.excerpt = resp;
+          message = "";
+        })
+        .catch((error) => {
+          message = "Impossible de trouver le passage demandé."
+          console.log(fragment, error);
+        });
+
     const payload: ShareRequestType = {
       reference: {
         bookCode: match[1],
