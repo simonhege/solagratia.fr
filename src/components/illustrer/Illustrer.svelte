@@ -88,10 +88,10 @@
     message = "Chargement en cours ...";
     console.log(fragment, lastHash);
     lastHash = fragment;
-    const refRegex= /#\/([a-zA-Z]+)\/(\d+)\/(\d+)(-(\d+))?/;
+    const refRegex= /#\/([1-9A-Z]{3})\/(\d+)\/(\d+)(-(\d+))?/;
     const match = fragment.match(refRegex);
     if (!match) {
-      message = "Impossible de trouver le fragment demandé: fragment invalide."
+      message = "Impossible de trouver le passage demandé: fragment invalide."
       console.log(fragment)
       return;
     }
