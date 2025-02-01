@@ -9,9 +9,6 @@
       <p class="text-2xl text-gray-500 w-96 text-center">{content.excerpt.text}</p>
     </div>
   </div>
-  <p>
-    <a href={"/illustrer#/" + hash(content.excerpt.reference)}>Obtenir des prompts additionels</a>
-  </p>
   {:else}
   <h2>Partager {refString(content.response.verses.reference)}</h2>
   <img class="rounded" src={content.response.images[content.selected].imageUrl} alt={content.response.images[content.selected].alt} />
@@ -34,9 +31,11 @@
       </button>
     </div>
   </div>
-  <p>
-    <a href={"/illustrer#/" + hash(content.response.verses.reference)}>Obtenir des prompts additionels</a>
-  </p>
+  {#if showAdmin}
+    <p>
+      <a href={"/illustrer#/" + hash(content.response.verses.reference)}>Obtenir des prompts additionels</a>
+    </p>
+  {/if}
   {/if}
   <div>
     <p class="text-sm text-gray-500 max-w-prose mx-auto text-center my-6">
@@ -47,6 +46,7 @@
 
 <script lang="ts">
   let message = $state("Chargement en cours ...");
+  const showAdmin = (localStorage.getItem('show-admin') === 'true') 
   let lastHash = '';
   window.addEventListener('hashchange', () => {
     if (window.location.hash !== lastHash) {
