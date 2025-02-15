@@ -92,8 +92,6 @@
   async function send(text: string, idx: number) {
     const payload : UploadRequestType = {
       url: (document.getElementById("img"+idx) as HTMLImageElement).src,
-      keywords: content.response.keywords,
-      description: text,
     }
     const req = new Request("https://api.solagratia.fr/admin/backgrounds", {
       method: 'POST',
@@ -145,8 +143,6 @@
   }
   type UploadRequestType = {
     url: string,
-    keywords: string[],
-    description: string,
   }
   type ContentType = {
     excerpt?: BibleExcerptType,
