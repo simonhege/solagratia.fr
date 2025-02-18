@@ -20,6 +20,39 @@
     </div>
   </div>
   <Table stats={pageViewedStats}></Table>
+  <div class="bg-white border-gray-900 shadow-xl p-4 flex items-center justify-between">
+    <h2 class="font-bold text-[#111827] text-2xl xl:text-2xl">History</h2>
+  </div>
+  <div class="bg-white border-gray-900 shadow-xl p-4">
+    <table class="table-auto w-full p-1">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Durée</th>
+          <th>Question</th>
+          <th>Versets</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each historyItems as item}
+          <tr>
+            <td>{new Date(item.dateTime).toISOString()}</td>
+            <td>{(item.duration / 1000000000).toFixed(2)}s</td>
+            <td>{item.question}</td>
+            <td>
+              {#each item.verses as verse}
+                <span class="rounded bg-gray-200 shadow-md m-1"
+                  title={verse.text}
+                  >
+                  {refString(verse.reference)}
+                </span>
+              {/each}
+            </td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <script lang="ts">
@@ -29,14 +62,36 @@
     headers?: String[],
     values?: Map<String, number[]>
   }
+  type VerseReference = {
+    bookCode: string,
+    bookName: string,
+    chapter: number,
+    verseStart: number,
+    verseEnd: number,
+  }
+  type Verse = {
+    text: string,
+    reference: VerseReference
+  }
+  type HistoryItem = {
+    dateTime: string,
+    duration: number,
+    question: string,
+    verses: Verse[],
+  }
+  type HistoryResponse = {
+    items: HistoryItem[]
+  }
 
   let inputPeriod = $state("day")
   let inputApiKey = $state("")
   let pageViewedStats : Stats = $state({})
+  let historyItems: HistoryItem[] = $state([])
 
   $effect(() => {
     if (inputApiKey.length > 0) {
       getPageViewedStats(inputPeriod, inputApiKey);
+      getExplorerHistory(inputApiKey);
     }
   });
 
@@ -52,5 +107,22 @@
     } else {
       console.error(`HTTP error! Status: ${raw.status}`)
     }
+  }
+  async function getExplorerHistory(apiKey: string) {
+    const raw = await window.fetch("https://api.solagratia.fr/admin/explorer/history", {
+      headers: {
+        'X-Api-Key': apiKey,
+      }
+    });
+    if (raw.ok) {
+      const jsonData: HistoryResponse = await raw.json();
+      historyItems = jsonData.items;
+    } else {
+      console.error(`HTTP error! Status: ${raw.status}`)
+    }
+    
+  }
+  function refString(ref: VerseReference) :string {
+    return ref.bookName + ' ' + ref.chapter + '.' + ref.verseStart + (ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : '');
   }
 </script>
