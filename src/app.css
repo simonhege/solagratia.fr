@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@theme {
+	--color-bgstart: #fff8f0;
+	--color-bgend: #ffeedd;
+	--color-bgsecondary: #627d98;
+	--color-bgtertiary: #1a2e40;
+
+	--color-primary: #daa520;
+	--color-primary-strong: #c0901a;
+
+	--color-primary-text: #1a2e40;
+	--color-secondary-text: #6b7280;
+	--color-tertiary-text: #a1b5c1;
+}
