@@ -30,7 +30,7 @@ jobs:
         with:
           args: --acl public-read --delete
         env:
-          SOURCE_DIR: './dist'
+          SOURCE_DIR: './build'
           AWS_S3_BUCKET: ${{ secrets.SCW_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
