@@ -1,7 +1,34 @@
 <script lang="ts">
 	import { LogIn, UserPlus, BookOpen, Search, GlassWater, Menu } from '@lucide/svelte';
+	import { page } from '$app/state';
 
-	var showMenu = false;
+	var showMenu = $state(false);
+
+	function pageViewed(pathname: string) {
+		if (!localStorage.getItem("do-not-track")) {
+			var payload = {
+				screen: window.screen.width + 'x' + window.screen.height,
+				lang: window.navigator.language,
+				page: pathname,
+			};
+			const req = new Request("https://api.solagratia.fr/pageViewed", {
+				method: 'POST',
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(payload)
+			});
+			window.fetch(req).finally(() => {
+				console.log("Page viewed", payload);
+			});
+		}
+	}
+
+	$effect(() => {
+		pageViewed(page.url.pathname)
+		showMenu = false;
+	});
+
 </script>
 
 <header class="sticky top-0 z-50 bg-white shadow-sm">
@@ -64,7 +91,7 @@
 			<button
 				class="text-primary-text focus:outline-none"
 				aria-label="Toggle menu"
-				on:click={() => (showMenu = !showMenu)}
+				onclick={() => (showMenu = !showMenu)}
 			>
 				<Menu />
 			</button>
