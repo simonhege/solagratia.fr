@@ -10,6 +10,7 @@
 		Clock,
 		Edit
 	} from '@lucide/svelte';
+	import {user} from '$lib/stores/user'
 </script>
 
 <svelte:head>
@@ -68,6 +69,7 @@
 			<GlassWater class="mr-2" /> Découvrir ce texte en profondeur
 		</a>
 
+		{#if !$user}
 		<div
 			class="flex flex-col items-center justify-center space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4"
 		>
@@ -78,6 +80,7 @@
 				<UserPlus class="mr-2" /> S'inscrire pour Sauvegarder & Annoter
 			</a>
 		</div>
+		{/if}
 	</div>
 </main>
 
