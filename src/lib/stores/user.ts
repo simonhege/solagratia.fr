@@ -8,7 +8,7 @@ let user: Writable<User | null>;
 
 if (browser) {
   const settings = {
-    authority: "https://accounts.solagratia.fr/",
+    authority: import.meta.env.VITE_OIDC_AUTHORITY,
     client_id: "www.solagratia.fr",
     fetchRequestCredentials: "include" as RequestCredentials,
     response_type: 'code',
