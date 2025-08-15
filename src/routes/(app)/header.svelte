@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { LogIn, UserPlus, BookOpen, Search, GlassWater, Menu, LogOut, UserCircle } from '@lucide/svelte';
+	import { LogIn, UserPlus, BookOpen, Search, GlassWater, Menu, LogOut, UserCircle, Settings } from '@lucide/svelte';
 	import { page } from '$app/state';
 	import {user, userManager} from '$lib/stores/user'
 
@@ -85,9 +85,15 @@
 					<UserCircle class="mr-2 md:inline-block" />
 				</button>
 				{#if showUser}
-					<div class="bg-white absolute left-0 top-full mt-2 p-2 w-64 rounded-xl shadow-lg flex flex-col gap-2">
-						<p class="truncate text-secondary-text">{$user.profile.email}</p>
+					<div class="bg-white absolute right-0 top-full mt-2 p-2 w-64 rounded-xl shadow-lg flex flex-col gap-2">
+						<p class="truncate text-secondary-text">Connecté en tant que <br/>{$user.profile.name}</p>
 						
+						<a
+							href="/mon-compte"
+							class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
+						>
+							<Settings class="mr-2 md:hidden lg:inline-block" /> Paramètres du compte
+						</a>
 						<button
 							onclick={() => userManager.removeUser()}
 							class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"
@@ -145,6 +151,12 @@
 				<Search class="mr-2" /> Explorer
 			</a>
 			{#if $user}
+			<a
+				href="/mon-compte"
+				class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
+			>
+				<Settings class="mr-2" /> Paramètres du compte
+			</a>
 			<button
 				onclick={() => userManager.removeUser()}
 				class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"
