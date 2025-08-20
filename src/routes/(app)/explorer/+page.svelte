@@ -1,6 +1,16 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
-	import { MessageCircleWarning, MessageCircleX, Share2 } from '@lucide/svelte';
+	import { user } from '$lib/stores/user';
+	import {
+		userData,
+		addFavorite,
+		removeFavorite,
+		type BibleRef,
+		bibleRefEquals,
+		bibleRefToString,
+		bibleRefToHash
+	} from '$lib/stores/userData';
+	import { MessageCircleWarning, MessageCircleX, Share2, Star } from '@lucide/svelte';
 
 	let question = $state('');
 	let loading = $state(false);
@@ -30,37 +40,10 @@
 		'Dieu et le travail'
 	]).slice(0, 6);
 
-	type verseReference = {
-		bookCode: string;
-		bookName: string;
-		chapter: number;
-		verseStart: number;
-		verseEnd: number;
-	};
 	type verse = {
 		text: string;
-		reference: verseReference;
+		reference: BibleRef;
 	};
-	function refString(ref: verseReference): string {
-		return (
-			ref.bookName +
-			' ' +
-			ref.chapter +
-			'.' +
-			ref.verseStart +
-			(ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : '')
-		);
-	}
-	function toHash(ref: verseReference): string {
-		return (
-			ref.bookCode +
-			'/' +
-			ref.chapter +
-			'/' +
-			ref.verseStart +
-			(ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : '')
-		);
-	}
 
 	let verses: verse[] = $state([]);
 
@@ -80,15 +63,14 @@
 		const payload = {
 			question: question
 		};
-		const req = new Request('https://api.solagratia.fr/explorer', {
+		const req = new Request(import.meta.env.VITE_SG_API + '/explorer', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(payload)
 		});
-		await window
-			.fetch(req)
+		await fetch(req)
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(`HTTP error! Status: ${response.status}`);
@@ -108,6 +90,11 @@
 			.finally(() => {
 				loading = false;
 			});
+	}
+
+	function isFavorite(reference: BibleRef): boolean {
+		if (!$userData) return false;
+		return $userData.favorites.some((fav) => bibleRefEquals(fav.ref, reference));
 	}
 </script>
 
@@ -197,20 +184,34 @@
 				{#each verses as verse (verse.reference)}
 					<div class="mb-4">
 						<p class="border-primary mb-1 border-l-2 pl-2 lg:text-xl">{verse.text}</p>
-						<p class="text-primary-text text-sm lg:text-lg">
+						<div class="text-primary-text flex gap-4 text-sm lg:text-lg">
 							<a
-								class="hover:text-primary hover:underline"
+								class="hover:text-primary mr-auto hover:underline"
 								href={'/bible/' + verse.reference.bookCode + '/' + verse.reference.chapter}
 							>
-								{refString(verse.reference)}
+								{bibleRefToString(verse.reference)}
 							</a>
-							<a
-								class="hover:text-primary float-end hover:underline"
-								href={'/partager/' + toHash(verse.reference)}
-							>
-								<Share2 size="20" />
+							{#if $user}
+								{#if isFavorite(verse.reference)}
+									<button
+										class="text-primary cursor-pointer"
+										onclick={() => removeFavorite(verse.reference)}
+									>
+										<Star class="fill-primary hover:fill-none" />
+									</button>
+								{:else}
+									<button
+										class="hover:text-primary cursor-pointer"
+										onclick={() => addFavorite(verse.reference)}
+									>
+										<Star class="hover:fill-primary" />
+									</button>
+								{/if}
+							{/if}
+							<a class="hover:text-primary" href={'/partager/' + bibleRefToHash(verse.reference)}>
+								<Share2 />
 							</a>
-						</p>
+						</div>
 					</div>
 				{/each}
 

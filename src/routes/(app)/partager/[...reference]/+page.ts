@@ -33,7 +33,7 @@ export const load: PageLoad = async ({ params }) => {
 		},
 		count: 4
 	};
-	const req = new Request('https://api.solagratia.fr/share', {
+	const req = new Request(import.meta.env.VITE_SG_API + '/share', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'

@@ -10,7 +10,7 @@
 		Clock,
 		Edit
 	} from '@lucide/svelte';
-	import {user} from '$lib/stores/user'
+	import { user } from '$lib/stores/user';
 </script>
 
 <svelte:head>
@@ -70,16 +70,16 @@
 		</a>
 
 		{#if !$user}
-		<div
-			class="flex flex-col items-center justify-center space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4"
-		>
-			<a
-				href="/inscription"
-				class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
+			<div
+				class="flex flex-col items-center justify-center space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4"
 			>
-				<UserPlus class="mr-2" /> S'inscrire pour Sauvegarder & Annoter
-			</a>
-		</div>
+				<a
+					href="/inscription"
+					class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
+				>
+					<UserPlus class="mr-2" /> S'inscrire pour Sauvegarder & Annoter
+				</a>
+			</div>
 		{/if}
 	</div>
 </main>

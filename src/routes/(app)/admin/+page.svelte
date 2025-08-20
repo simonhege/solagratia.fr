@@ -39,8 +39,8 @@
 	});
 
 	async function getPageViewedStats(period: string, apiKey: string) {
-		const raw = await window.fetch(
-			'https://api.solagratia.fr/admin/pageViewed/stats?period=' + period,
+		const raw = await fetch(
+			import.meta.env.VITE_SG_API + '/admin/pageViewed/stats?period=' + period,
 			{
 				headers: {
 					'X-Api-Key': apiKey
@@ -55,7 +55,7 @@
 		}
 	}
 	async function getExplorerHistory(apiKey: string) {
-		const raw = await window.fetch('https://api.solagratia.fr/admin/explorer/history', {
+		const raw = await fetch(import.meta.env.VITE_SG_API + '/admin/explorer/history', {
 			headers: {
 				'X-Api-Key': apiKey
 			}

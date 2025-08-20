@@ -1,36 +1,45 @@
 <script lang="ts">
-	import { LogIn, UserPlus, BookOpen, Search, GlassWater, Menu, LogOut, UserCircle, Settings } from '@lucide/svelte';
+	import {
+		LogIn,
+		UserPlus,
+		BookOpen,
+		Search,
+		GlassWater,
+		Menu,
+		LogOut,
+		UserCircle,
+		Settings
+	} from '@lucide/svelte';
 	import { page } from '$app/state';
-	import {user, userManager} from '$lib/stores/user'
+	import { user, userManager } from '$lib/stores/user';
 
 	var showMenu = $state(false);
 	var showUser = $state(false);
 
 	function pageViewed(pathname: string) {
-		if (!localStorage.getItem("do-not-track")) {
+		if (!localStorage.getItem('do-not-track')) {
 			var payload = {
 				screen: window.screen.width + 'x' + window.screen.height,
 				lang: window.navigator.language,
-				page: pathname,
+				page: pathname
 			};
-			const req = new Request("https://api.solagratia.fr/pageViewed", {
+			const req = new Request(import.meta.env.VITE_SG_API + '/pageViewed', {
 				method: 'POST',
 				headers: {
-					"Content-Type": "application/json",
+					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify(payload)
 			});
-			window.fetch(req).finally(() => {
-				console.log("Page viewed", payload);
+			fetch(req).finally(() => {
+				console.log('Page viewed', payload);
 			});
 		}
 	}
 
 	$effect(() => {
-		pageViewed(page.url.pathname)
+		pageViewed(page.url.pathname);
 		showMenu = false;
 	});
-
 </script>
 
 <header class="sticky top-0 z-50 bg-white shadow-sm">
@@ -76,46 +85,49 @@
 
 		<div class="hidden items-center space-x-4 md:flex">
 			{#if $user}
-			
-			<div class="relative flex items-center">
-				<button
-					onclick={() => showUser=!showUser}
-					class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"  
-				>
-					<UserCircle class="mr-2 md:inline-block" />
-				</button>
-				{#if showUser}
-					<div class="bg-white absolute right-0 top-full mt-2 p-2 w-64 rounded-xl shadow-lg flex flex-col gap-2">
-						<p class="truncate text-secondary-text">Connecté en tant que <br/>{$user.profile.name}</p>
-						
-						<a
-							href="/mon-compte"
-							class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
+				<div class="relative flex items-center">
+					<button
+						onclick={() => (showUser = !showUser)}
+						class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"
+					>
+						<UserCircle class="mr-2 md:inline-block" />
+					</button>
+					{#if showUser}
+						<div
+							class="absolute top-full right-0 mt-2 flex w-64 flex-col gap-2 rounded-xl bg-white p-2 shadow-lg"
 						>
-							<Settings class="mr-2 md:hidden lg:inline-block" /> Paramètres du compte
-						</a>
-						<button
-							onclick={() => userManager.removeUser()}
-							class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"
-						>
-							<LogOut class="mr-2 md:hidden lg:inline-block" /> Se déconnecter
-						</button>
-					</div>
-				{/if}
-			</div>
+							<p class="text-secondary-text truncate">
+								Connecté en tant que <br />{$user.profile.name}
+							</p>
+
+							<a
+								href="/mon-compte"
+								class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
+							>
+								<Settings class="mr-2 md:hidden lg:inline-block" /> Paramètres du compte
+							</a>
+							<button
+								onclick={() => userManager.removeUser()}
+								class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"
+							>
+								<LogOut class="mr-2 md:hidden lg:inline-block" /> Se déconnecter
+							</button>
+						</div>
+					{/if}
+				</div>
 			{:else}
-			<button
-				onclick={() => userManager.signinRedirect({state: {"returnTo": page.url.href}})}
-				class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"
-			>
-				<LogIn class="mr-2 md:hidden lg:inline-block" /> Connexion
-			</button>
-			<a
-				href="/inscription"
-				class="bg-primary hover:bg-primary-strong inline-flex items-center rounded-md px-4 py-2 text-white transition duration-300"
-			>
-				<UserPlus class="mr-2 md:hidden lg:inline-block" /> Inscription
-			</a>
+				<button
+					onclick={() => userManager.signinRedirect({ state: { returnTo: page.url.href } })}
+					class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"
+				>
+					<LogIn class="mr-2 md:hidden lg:inline-block" /> Connexion
+				</button>
+				<a
+					href="/inscription"
+					class="bg-primary hover:bg-primary-strong inline-flex items-center rounded-md px-4 py-2 text-white transition duration-300"
+				>
+					<UserPlus class="mr-2 md:hidden lg:inline-block" /> Inscription
+				</a>
 			{/if}
 		</div>
 
@@ -151,33 +163,32 @@
 				<Search class="mr-2" /> Explorer
 			</a>
 			{#if $user}
-			<a
-				href="/mon-compte"
-				class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
-			>
-				<Settings class="mr-2" /> Paramètres du compte
-			</a>
-			<button
-				onclick={() => userManager.removeUser()}
-				class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"
-			>
-				<LogOut class="mr-2" /> Se déconnecter
-			</button>
+				<a
+					href="/mon-compte"
+					class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
+				>
+					<Settings class="mr-2" /> Paramètres du compte
+				</a>
+				<button
+					onclick={() => userManager.removeUser()}
+					class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"
+				>
+					<LogOut class="mr-2" /> Se déconnecter
+				</button>
 			{:else}
-			<button
-				onclick={() => userManager.signinRedirect({state: {"returnTo": page.url.href}})}
-				class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"
-			>
-				<LogIn class="mr-2" /> Connexion
-			</button>
-			<a
-				href="/inscription"
-				class="bg-primary hover:bg-primary-strong inline-flex items-center justify-center rounded-md px-4 py-2 text-center text-white transition duration-300"
-			>
-				<UserPlus class="mr-2" /> Inscription
-			</a>
+				<button
+					onclick={() => userManager.signinRedirect({ state: { returnTo: page.url.href } })}
+					class="text-primary-text hover:text-primary inline-flex items-center transition duration-300 hover:cursor-pointer"
+				>
+					<LogIn class="mr-2" /> Connexion
+				</button>
+				<a
+					href="/inscription"
+					class="bg-primary hover:bg-primary-strong inline-flex items-center justify-center rounded-md px-4 py-2 text-center text-white transition duration-300"
+				>
+					<UserPlus class="mr-2" /> Inscription
+				</a>
 			{/if}
-			
 		</nav>
 	</div>
 </header>

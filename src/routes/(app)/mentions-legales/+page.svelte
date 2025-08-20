@@ -9,9 +9,8 @@
 	let genAiModel = $state('undefined');
 
 	$effect(() => {
-		const myRequest = new Request('https://api.solagratia.fr/info');
-		window
-			.fetch(myRequest)
+		const myRequest = new Request(import.meta.env.VITE_SG_API + '/info');
+		fetch(myRequest)
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(`HTTP error! Status: ${response.status}`);
