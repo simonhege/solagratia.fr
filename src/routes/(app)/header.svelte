@@ -8,7 +8,8 @@
 		Menu,
 		LogOut,
 		UserCircle,
-		Settings
+		Settings,
+		Star
 	} from '@lucide/svelte';
 	import { page } from '$app/state';
 	import { user, userManager } from '$lib/stores/user';
@@ -101,8 +102,17 @@
 							</p>
 
 							<a
+								href="/mes-favoris"
+								class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
+								onclick={() => (showUser = false)}
+							>
+								<Star class="mr-2 md:hidden lg:inline-block" /> Mes versets favoris
+							</a>
+
+							<a
 								href="/mon-compte"
 								class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
+								onclick={() => (showUser = false)}
 							>
 								<Settings class="mr-2 md:hidden lg:inline-block" /> Paramètres du compte
 							</a>
@@ -163,6 +173,12 @@
 				<Search class="mr-2" /> Explorer
 			</a>
 			{#if $user}
+				<a
+					href="/mes-favoris"
+					class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
+				>
+					<Star class="mr-2" /> Mes versets favoris
+				</a>
 				<a
 					href="/mon-compte"
 					class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"

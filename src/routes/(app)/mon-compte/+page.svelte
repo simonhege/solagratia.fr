@@ -1,7 +1,6 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { user, userManager } from '$lib/stores/user';
-	import { userData } from '$lib/stores/userData';
 	import { Download, Trash2, Undo } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
 
@@ -80,9 +79,6 @@
 		<p class="text-primary-text">
 			Vous pouvez télécharger vos données personnelles au format JSON.
 		</p>
-		<textarea class="h-64 w-full rounded-lg bg-gray-100 p-2" readonly>
-			{JSON.stringify($userData, null, 2)}
-		</textarea>
 		<button
 			class="bg-primary hover:bg-primary-strong rounded px-4 py-2 text-white hover:cursor-pointer"
 		>

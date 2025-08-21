@@ -16,7 +16,7 @@ type ShareRequestType = {
 	count?: number;
 };
 
-export const load: PageLoad = async ({ params }) => {
+export const load: PageLoad = async ({ fetch, params }) => {
 	const refRegex = /([1-9A-Z]{3})\/(\d+)\/(\d+)(-(\d+))?/;
 	const match = params.reference.match(refRegex);
 	if (!match) {

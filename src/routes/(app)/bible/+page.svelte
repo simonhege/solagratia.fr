@@ -9,10 +9,10 @@
 	let books = $derived.by(() => {
 		let all = data.books;
 		let filtered: unknown[] = [];
-		all.forEach((book: { Name: string; Code: string }) => {
+		all.forEach((book: { name: string; code: string }) => {
 			if (
-				book.Name.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-				book.Code.toLowerCase().indexOf(search.toLowerCase()) > -1
+				book.name.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
+				book.code.toLowerCase().indexOf(search.toLowerCase()) > -1
 			) {
 				filtered.push(book);
 			}
@@ -55,15 +55,15 @@
 				<summary
 					class="hover:text-primary hover:shadow-primary flex cursor-pointer items-center lg:text-lg [&::-webkit-details-marker]:hidden [&::marker]:hidden"
 				>
-					<span>{book.Name}</span>
+					<span>{book.name}</span>
 					<ChevronRight
 						class="ml-auto transition-transform duration-200 ease-in-out group-open:rotate-90"
 					/>
 				</summary>
 				<div class="mt-2 flex flex-wrap gap-1">
-					{#each { length: book.Chapters }, chapter}
+					{#each { length: book.chapters }, chapter}
 						<a
-							href="/bible/{book.Code}/{chapter + 1}"
+							href="/bible/{book.code}/{chapter + 1}"
 							class="hover:bg-primary block min-w-10 rounded border-2 border-black text-center dark:border-gray-200"
 							>{chapter + 1}</a
 						>

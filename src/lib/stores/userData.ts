@@ -129,17 +129,20 @@ function removeFavorite(ref: BibleRef) {
 		return;
 	}
 	content.favorites = content.favorites.filter((fav) => !bibleRefEquals(fav.ref, ref));
-	const req = new Request(URL, {
-		method: 'PUT',
+
+	const req = new Request(import.meta.env.VITE_SG_API + '/users/me/favorites', {
+		method: 'POST',
 		headers: {
-			Authorization: 'Bearer ' + access_token,
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			Authorization: 'Bearer ' + access_token
 		},
-		body: JSON.stringify(content)
+		body: JSON.stringify({ action: 'remove', reference: ref })
 	});
-	fetch(req).then((response) => {
-		if (!response.ok) {
-			throw new Error(`HTTP error! Status: ${response.status}`);
+	fetch(req).then((res) => {
+		if (res.ok) {
+			console.log('Favorite verse removed', ref);
+		} else {
+			console.error('Failed to remove favorite verse', ref);
 		}
 	});
 	userDataWritable.set(content);

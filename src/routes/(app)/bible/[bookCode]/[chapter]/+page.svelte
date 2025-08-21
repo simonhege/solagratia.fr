@@ -5,31 +5,37 @@
 
 	let { data }: PageProps = $props();
 
-	const title = data.Book.Name + (data.Book.Chapters == 1 ? '' : ', chapitre ' + data.Chapter);
+	const title = $derived(
+		data.book.name + (data.book.chapters == 1 ? '' : ', chapitre ' + data.chapter)
+	);
+
+	function isFavorite(verse: number): boolean {
+		return data.favorites && data.favorites.includes(verse);
+	}
 </script>
 
 {#snippet prevNext()}
-	{#if data.Book.Chapters > 1}
-		{#if data.Chapter == 1}
+	{#if data.book.chapters > 1}
+		{#if data.chapter == 1}
 			<nav class="flex justify-between">
 				<div></div>
-				<a href="/bible/{data.Book.Code}/{data.Chapter + 1}" class="flex items-center"
-					>{data.Book.Name} {data.Chapter + 1} <ChevronRight /></a
+				<a href="/bible/{data.book.code}/{data.chapter + 1}" class="flex items-center"
+					>{data.book.name} {data.chapter + 1} <ChevronRight /></a
 				>
 			</nav>
-		{:else if data.Chapter == data.Book.Chapters}
+		{:else if data.chapter == data.book.chapters}
 			<nav class="flex justify-between">
-				<a href="/bible/{data.Book.Code}/{data.Chapter - 1}" class="flex items-center"
-					><ChevronLeft /> {data.Book.Name} {data.Chapter - 1}</a
+				<a href="/bible/{data.book.code}/{data.chapter - 1}" class="flex items-center"
+					><ChevronLeft /> {data.book.name} {data.chapter - 1}</a
 				>
 			</nav>
 		{:else}
 			<nav class="flex justify-between">
-				<a href="/bible/{data.Book.Code}/{data.Chapter - 1}" class="flex items-center"
-					><ChevronLeft /> {data.Book.Name} {data.Chapter - 1}</a
+				<a href="/bible/{data.book.code}/{data.chapter - 1}" class="flex items-center"
+					><ChevronLeft /> {data.book.name} {data.chapter - 1}</a
 				>
-				<a href="/bible/{data.Book.Code}/{data.Chapter + 1}" class="flex items-center"
-					>{data.Book.Name} {data.Chapter + 1} <ChevronRight /></a
+				<a href="/bible/{data.book.code}/{data.chapter + 1}" class="flex items-center"
+					>{data.book.name} {data.chapter + 1} <ChevronRight /></a
 				>
 			</nav>
 		{/if}
@@ -44,8 +50,10 @@
 
 		<article class="prose dark:prose-invert lg:prose-xl my-2">
 			<p>
-				{#each data.Verses as verse, i (verse)}
-					<span class="ml-1 text-sm"><sup>{i + 1}</sup></span>&nbsp;<span>{verse}</span>
+				{#each data.verses as verse, i (verse)}
+					<span id={'' + (i + 1)} class={isFavorite(i + 1) ? 'bg-secondary-text text-white' : ''}>
+						<span class="ml-1 text-sm"> <sup>{i + 1}</sup></span>&nbsp;<span>{verse} </span>
+					</span>
 				{/each}
 			</p>
 		</article>
