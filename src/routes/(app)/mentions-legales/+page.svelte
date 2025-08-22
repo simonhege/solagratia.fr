@@ -3,7 +3,7 @@
 
 	const nom = 'Simon HEGE';
 	const email = 'simon@solagratia.fr';
-	const pubDate = '21 octobre 2024';
+	const pubDate = '22 août 2025';
 
 	let apiVersion = $state('undefined');
 	let genAiModel = $state('undefined');
@@ -70,9 +70,16 @@
 			suppression de vos données en nous contactant à l'adresse :
 			<a href="mailto:{email}">{email}</a>.
 		</p>
+		<p>Aucune donnée personnelle n’est cédée à des tiers. 
+			Les données sont conservées pour une durée maximale de 12 mois à compter de la dernière interaction.</p>
 
 		<h2>5. Cookies</h2>
-		<p>Ce site n'utilise pas de cookies.</p>
+		<p>Ce site n'utilise pas de cookies à des fins de suivi ou de mesure d'audience.</p>
+		<p>Seuls des cookies techniques strictement nécessaires au bon fonctionnement du site sont utilisés 
+			(ex. : gestion de session, préférences d'affichage). 
+			Aucun consentement n'est requis pour ces cookies conformément aux recommandations de la CNIL.</p>
+			<p>Si à l’avenir des cookies non essentiels sont mis en place (ex. : statistiques, réseaux sociaux), 
+				une bannière de consentement conforme au RGPD sera affichée.</p>
 
 		<p class="text-sm">Dernière mise à jour des mentions légales: {pubDate}</p>
 
