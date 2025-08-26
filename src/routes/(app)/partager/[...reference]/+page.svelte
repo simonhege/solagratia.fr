@@ -55,6 +55,31 @@
 				generatedImages = response.images;
 			});
 	});
+
+	function toast(message: string) {
+		// TODO display a toast notification instead of basic alert
+		alert(message);
+	}
+
+	function shareImage() {
+		if (navigator.share) {
+			navigator
+				.share({
+					title: `${bibleRefToString(data.reference)} - Sola Gratia`,
+					text: selectedImage.alt,
+					url: selectedImage.imageUrl
+				})
+				.then(() => console.log('Successful share'))
+				.catch((error) => console.log('Error sharing', error));
+		} else if (navigator.clipboard) {
+			navigator.clipboard.writeText(selectedImage.imageUrl)
+				.then(() => toast('Lien copié dans le presse-papiers !'))
+				.catch((error) => console.log('Error copying text', error));
+		} else {
+			toast('Le partage n\'est pas supporté par votre navigateur. Copiez le lien : ' + selectedImage.imageUrl);
+		}
+	}
+
 </script>
 
 <svelte:head>
@@ -78,6 +103,7 @@
 				class="bg-primary hover:bg-primary-strong dimensional-shadow hover-lift-dimensional inline-flex cursor-pointer items-center rounded-md px-4 py-2 font-medium text-white transition duration-300"
 				aria-label="Partager cette illustration"
 				disabled={generatedImages.length === 0}
+				onclick={shareImage}
 			>
 				<Share2 class="mr-2" /> Partager
 			</button>
