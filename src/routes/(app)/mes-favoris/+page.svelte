@@ -26,13 +26,15 @@
 
 	var favorites: verse[] = $state([]);
 
-	loadFavorites()
-		.then((data) => {
-			favorites = data;
-		})
-		.catch((err) => {
-			console.error('Failed to load favorites:', err);
-		});
+	$effect(() => {
+		loadFavorites()
+			.then((data) => {
+				favorites = data;
+			})
+			.catch((err) => {
+				console.error('Failed to load favorites:', err);
+			});
+	});
 
 	async function loadFavorites() {
 		const req = new Request(import.meta.env.VITE_SG_API + '/users/me/favorites', {
