@@ -50,7 +50,7 @@
 
 		<article class="prose dark:prose-invert lg:prose-xl my-2">
 			<p>
-				{#each data.verses as verse, i (verse)}
+				{#each data.verses as verse, i (i)}
 					<span id={'' + (i + 1)} class={isFavorite(i + 1) ? 'bg-secondary-text text-white' : ''}>
 						<span class="ml-1 text-sm"> <sup>{i + 1}</sup></span>&nbsp;<span>{verse} </span>
 					</span>
