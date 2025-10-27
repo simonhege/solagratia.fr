@@ -3,7 +3,7 @@
 
 	const nom = 'Simon HEGE';
 	const email = 'simon@solagratia.fr';
-	const pubDate = '22 août 2025';
+	const pubDate = '27 octobre 2025';
 
 	let apiVersion = $state('undefined');
 	let genAiModel = $state('undefined');
@@ -58,6 +58,7 @@
 				>Creative Commons</a
 			>.
 		</p>
+		<p>Les textes bibliques sont issus de la Bible Louis Segond (1910). Domaine public. </p>
 
 		<h2>4. Données personnelles</h2>
 		<p>
