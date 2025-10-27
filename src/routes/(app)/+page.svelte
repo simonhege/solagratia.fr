@@ -11,6 +11,11 @@
 		Edit
 	} from '@lucide/svelte';
 	import { user } from '$lib/stores/user';
+	import type { PageProps } from './$types';
+	import { bibleRefToString } from '$lib/stores/userData';
+
+	let { data }: PageProps = $props();
+
 </script>
 
 <svelte:head>
@@ -21,14 +26,11 @@
 	<div class="w-full max-w-3xl text-center">
 		<div class="mb-6 rounded-lg bg-white p-8 shadow-lg">
 			<p class="text-primary-text mb-4 text-2xl leading-relaxed font-normal md:text-3xl">
-				"C'est ici la journée que l'Eternel a faite: Qu'elle soit pour nous un sujet d'allégresse et
-				de joie!"
+				« {data.verses.text} »
 			</p>
-			<p class="text-secondary-text mb-4 text-lg">Psaumes 118.24</p>
+			<p class="text-secondary-text mb-4 text-lg">La Bible, {bibleRefToString(data.verses.reference)}</p>
 			<p class="text-md text-secondary-text italic">
-				Chaque jour est un don divin, une grâce imméritée qui nous rappelle que la joie véritable ne
-				dépend pas des circonstances, mais de notre confiance en Dieu. Que cette journée soit vécue
-				avec reconnaissance et louange !
+				{data.short}
 			</p>
 			<div class="mt-6 flex justify-center space-x-4 border-t border-gray-200 pt-4">
 				<span class="font-medium text-gray-600">Partager :</span>
@@ -63,7 +65,7 @@
 		</div>
 
 		<a
-			href="/pause"
+			href="/se-ressourcer/{data.slug}"
 			class="bg-primary hover:bg-primary-strong mb-4 inline-flex items-center rounded-md px-8 py-3 text-lg font-semibold text-white transition duration-300"
 		>
 			<GlassWater class="mr-2" /> Découvrir ce texte en profondeur

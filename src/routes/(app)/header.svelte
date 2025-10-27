@@ -71,10 +71,10 @@
 				<BookOpen class="mr-2 md:hidden lg:inline-block" /> Lire la Bible</a
 			>
 			<a
-				href="/pause"
+				href="/se-ressourcer"
 				class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
 			>
-				<GlassWater class="mr-2 md:hidden lg:inline-block" /> Pause Quotidienne</a
+				<GlassWater class="mr-2 md:hidden lg:inline-block" /> Se Ressourcer</a
 			>
 			<a
 				href="/explorer"
@@ -161,10 +161,10 @@
 				<BookOpen class="mr-2" /> Lire la Bible
 			</a>
 			<a
-				href="/pause"
+				href="/se-ressourcer"
 				class="text-primary-text hover:text-primary inline-flex items-center transition duration-300"
 			>
-				<GlassWater class="mr-2" /> Pause Quotidienne
+				<GlassWater class="mr-2" /> Se Ressourcer
 			</a>
 			<a
 				href="/explorer"
