@@ -4,6 +4,7 @@
 	import {
 		bibleRefEquals,
 		bibleRefToHash,
+		bibleRefToHref,
 		bibleRefToString,
 		removeFavorite,
 		type BibleRef
@@ -65,7 +66,7 @@
 					<div class="text-primary-text flex gap-4 text-sm lg:text-lg">
 						<a
 							class="hover:text-primary mr-auto hover:underline"
-							href={'/bible/' + verse.reference.bookCode + '/' + verse.reference.chapter}
+							href={bibleRefToHref(verse.reference)}
 						>
 							{bibleRefToString(verse.reference)}
 						</a>

@@ -8,7 +8,10 @@
 		type BibleRef,
 		bibleRefEquals,
 		bibleRefToString,
-		bibleRefToHash
+		bibleRefToHash,
+
+		bibleRefToHref
+
 	} from '$lib/stores/userData';
 	import { MessageCircleWarning, MessageCircleX, Share2, Star } from '@lucide/svelte';
 	import { getCachedResponse, setCachedResponse } from '$lib/stores/explorerCache';
@@ -226,7 +229,7 @@
 						<div class="text-primary-text flex gap-4 text-sm lg:text-lg">
 							<a
 								class="hover:text-primary mr-auto hover:underline"
-								href={'/bible/' + verse.reference.bookCode + '/' + verse.reference.chapter}
+								href={bibleRefToHref(verse.reference)}
 							>
 								{bibleRefToString(verse.reference)}
 							</a>

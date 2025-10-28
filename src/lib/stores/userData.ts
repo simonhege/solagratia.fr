@@ -19,6 +19,10 @@ export function bibleRefToHash(ref: BibleRef): string {
 	return `${ref.bookCode}/${ref.chapter}/${ref.verseStart}${ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : ''}`;
 }
 
+export function bibleRefToHref(ref: BibleRef): string {
+	return `/bible/${ref.bookCode}/${ref.chapter}#${ref.verseStart}${ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : ''}`;
+}
+
 export function bibleRefEquals(a: BibleRef, b: BibleRef): boolean {
 	return (
 		a.bookCode === b.bookCode &&

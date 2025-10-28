@@ -8,7 +8,8 @@
 		bibleRefToString, 
 		removeFavorite, 
 		type BibleRef, 
-		bibleRefEquals} from '$lib/stores/userData';
+		bibleRefEquals,
+		bibleRefToHref} from '$lib/stores/userData';
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { user } from '$lib/stores/user';
 	import { Share2, Star } from '@lucide/svelte';
@@ -58,7 +59,7 @@
 						La Bible,
 							<a
 								class="hover:text-primary mr-auto hover:underline"
-								href={'/bible/' + data.verses.reference.bookCode + '/' + data.verses.reference.chapter}
+								href={bibleRefToHref(data.verses.reference)}
 							>
 									{bibleRefToString(data.verses.reference)}
 							</a>
@@ -100,7 +101,7 @@
 						<div class="text-primary-text flex gap-4 text-sm lg:text-lg">
 							<a
 								class="hover:text-primary mr-auto hover:underline"
-								href={'/bible/' + verse.reference.bookCode + '/' + verse.reference.chapter}
+								href={bibleRefToHref(verse.reference)}
 							>
 								{bibleRefToString(verse.reference)}
 							</a>
