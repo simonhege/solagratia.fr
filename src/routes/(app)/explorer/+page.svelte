@@ -11,11 +11,25 @@
 		bibleRefToHash
 	} from '$lib/stores/userData';
 	import { MessageCircleWarning, MessageCircleX, Share2, Star } from '@lucide/svelte';
+	import { getCachedResponse, setCachedResponse } from '$lib/stores/explorerCache';
+	import { goto } from '$app/navigation';
+	import type { PageProps } from '../$types';
 
-	let question = $state('');
+	let { data }: PageProps = $props();
+
+	let question = $state(data.question);
 	let loading = $state(false);
 	let displayError = $state(false);
 	let noAnswer = $state(false);
+	let isInitialLoad = $state(true);
+
+	// Execute search when component mounts with a question parameter
+	$effect(() => {
+		if (isInitialLoad && data.question) {
+			handleQuestion(null);
+			isInitialLoad = false;
+		}
+	});
 
 	function shuffle(array: string[]): string[] {
 		for (let i = array.length - 1; i > 0; i--) {
@@ -47,19 +61,41 @@
 
 	let verses: verse[] = $state([]);
 
+	function setUrlQuestion(q: string) {
+		const url = new URL(window.location.href);
+		if (q) {
+			url.searchParams.set('question', q);
+		} else {
+			url.searchParams.delete('question');
+		}
+		goto(url.toString(), { replaceState: true });
+	}
+
 	async function askQuestion(q: string) {
 		question = q;
+		setUrlQuestion(q);
 		handleQuestion(null);
 	}
 
 	async function handleQuestion(e: SubmitEvent | null) {
 		if (e != null) {
 			e.preventDefault();
+			// Update URL only on explicit form submission
+			setUrlQuestion(question);
 		}
 		loading = true;
 		displayError = false;
 		noAnswer = false;
 		verses = [];
+
+		// Check cache first
+		const cached = getCachedResponse(question);
+		if (cached) {
+			verses = cached.verses;
+			loading = false;
+			return;
+		}
+
 		const payload = {
 			question: question
 		};
@@ -81,6 +117,9 @@
 				verses = response.verses;
 				if (verses == null || verses.length == 0) {
 					noAnswer = true;
+				} else {
+					// Cache successful responses
+					setCachedResponse(question, verses);
 				}
 			})
 			.catch((error) => {
