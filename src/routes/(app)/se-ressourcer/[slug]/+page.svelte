@@ -12,11 +12,17 @@
 		bibleRefToHref} from '$lib/stores/userData';
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { user } from '$lib/stores/user';
-	import { Share2, Star } from '@lucide/svelte';
+	import { Edit3, Pen, Share2, Star } from '@lucide/svelte';
 
 	let { data }: PageProps = $props();
 
-	console.log(data);
+
+	let showAdmin = $state(false);
+	$effect(() => {
+		if (localStorage.getItem('show-admin') === 'true') {
+			showAdmin = true;
+		}
+	});
 
 	const dateText = new Date(data.publicationDate).toLocaleDateString("fr-FR", {
 		weekday: 'long',
@@ -90,6 +96,14 @@
 				>
 					<Share2 /> Partager ce verset
 				</a>
+
+				<a
+					href={'/admin/editer/' + data.slug}
+					class="bg-primary hover:bg-primary-strong mb-4 inline-flex items-center rounded-md px-8 py-3 text-lg font-semibold text-white transition duration-300"
+				>
+					<Pen /> Editer
+				</a>
+
 			</p>
 
 			{#if data.seeAlso.length > 0}
