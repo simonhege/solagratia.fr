@@ -16,13 +16,6 @@
 
 	let { data }: PageProps = $props();
 
-	let showAdmin = $state(false);
-	$effect(() => {
-		if (localStorage.getItem('show-admin') === 'true') {
-			showAdmin = true;
-		}
-	});
-
 	const dateText = new Date(data.publicationDate).toLocaleDateString('fr-FR', {
 		weekday: 'long',
 		day: 'numeric',

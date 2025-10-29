@@ -20,7 +20,7 @@
 <div class="container mx-auto max-w-7xl p-2">
 	<PageTitle title="Se ressourcer" />
 	<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-		{#each data.meditations as meditation}
+		{#each data.meditations as meditation (meditation.id)}
 			<div class="overflow-hidden rounded-lg bg-white shadow-md">
 				<div class="p-6">
 					<div class="mb-3">
@@ -59,7 +59,7 @@
 					</div>
 
 					<div class="mb-3">
-						{#each meditation.tags as tag}
+						{#each meditation.tags as tag (tag)}
 							<span
 								class="mr-2 inline-block rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-semibold text-indigo-800 lg:text-sm"
 							>
