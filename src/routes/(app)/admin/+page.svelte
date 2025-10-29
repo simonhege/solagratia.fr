@@ -1,5 +1,6 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
+	import { user } from '$lib/stores/user';
 
 	type Stats = {
 		headers?: string[];
@@ -27,23 +28,20 @@
 	};
 
 	let inputPeriod = $state('day');
-	let inputApiKey = $state('');
 	let pageViewedStats: Stats = $state({});
 	let historyItems: HistoryItem[] = $state([]);
 
 	$effect(() => {
-		if (inputApiKey.length > 0) {
-			getPageViewedStats(inputPeriod, inputApiKey);
-			getExplorerHistory(inputApiKey);
-		}
+		getPageViewedStats(inputPeriod);
+		getExplorerHistory();
 	});
 
-	async function getPageViewedStats(period: string, apiKey: string) {
+	async function getPageViewedStats(period: string) {
 		const raw = await fetch(
 			import.meta.env.VITE_SG_API + '/admin/pageViewed/stats?period=' + period,
 			{
 				headers: {
-					'X-Api-Key': apiKey
+					Authorization: 'Bearer ' + $user?.access_token
 				}
 			}
 		);
@@ -54,10 +52,10 @@
 			console.error(`HTTP error! Status: ${raw.status}`);
 		}
 	}
-	async function getExplorerHistory(apiKey: string) {
+	async function getExplorerHistory() {
 		const raw = await fetch(import.meta.env.VITE_SG_API + '/admin/explorer/history', {
 			headers: {
-				'X-Api-Key': apiKey
+				Authorization: 'Bearer ' + $user?.access_token
 			}
 		});
 		if (raw.ok) {
@@ -77,21 +75,10 @@
 			(ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : '')
 		);
 	}
-
-	$effect(() => {
-		if (inputApiKey.length > 0) {
-			getPageViewedStats(inputPeriod, inputApiKey);
-			getExplorerHistory(inputApiKey);
-		}
-	});
 </script>
 
 <div class="container mx-auto max-w-7xl p-2">
 	<PageTitle title="Administration" />
-	<div class="flex items-center gap-2">
-		<label for="api-key">Clé: </label>
-		<input type="password" name="api-key" bind:value={inputApiKey} />
-	</div>
 
 	<h2 class="text-primary-text mb-8 text-center text-2xl font-bold md:text-3xl">Statistiques</h2>
 	{#if pageViewedStats && pageViewedStats.headers && pageViewedStats.values}
@@ -109,7 +96,7 @@
 					{#each Object.entries(pageViewedStats.values) as [page, values] (page)}
 						<tr class="hover:bg-tertiary-text text-center">
 							<td class="p-1 text-left">{page}</td>
-							{#each values as v (v)}
+							{#each values as v}
 								<td>{v}</td>
 							{/each}
 						</tr>
