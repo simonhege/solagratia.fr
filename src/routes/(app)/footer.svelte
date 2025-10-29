@@ -1,11 +1,5 @@
 <script lang="ts">
-	let showAdmin = $state(false);
-
-	$effect(() => {
-		if (localStorage.getItem('show-admin') === 'true') {
-			showAdmin = true;
-		}
-	});
+	import { isAdmin } from '$lib/stores/user';
 </script>
 
 {#snippet footer_link(text: string, href: string)}
@@ -25,7 +19,7 @@
 		<nav class="flex place-content-center gap-4">
 			{@render footer_link('Mentions légales', '/mentions-legales')}
 			{@render footer_extlink('Contact', 'mailto:simon@solagratia.fr')}
-			{#if showAdmin}
+			{#if $isAdmin}
 				{@render footer_link('Admin', '/admin')}
 				{@render footer_link('Editeur de méditations', '/admin/editer')}
 			{/if}

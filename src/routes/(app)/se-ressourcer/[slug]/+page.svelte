@@ -11,8 +11,8 @@
 		bibleRefEquals,
 		bibleRefToHref} from '$lib/stores/userData';
 	import PageTitle from '$lib/PageTitle.svelte';
-	import { user } from '$lib/stores/user';
-	import { Edit3, Pen, Share2, Star } from '@lucide/svelte';
+	import { user, isAdmin } from '$lib/stores/user';
+	import { Pen, Share2, Star } from '@lucide/svelte';
 
 	let { data }: PageProps = $props();
 
@@ -97,12 +97,14 @@
 					<Share2 /> Partager ce verset
 				</a>
 
-				<a
-					href={'/admin/editer/' + data.slug}
-					class="bg-primary hover:bg-primary-strong mb-4 inline-flex items-center rounded-md px-8 py-3 text-lg font-semibold text-white transition duration-300"
-				>
-					<Pen /> Editer
-				</a>
+				{#if $isAdmin}
+					<a
+						href={'/admin/editer/' + data.slug}
+						class="bg-primary hover:bg-primary-strong mb-4 inline-flex items-center rounded-md px-8 py-3 text-lg font-semibold text-white transition duration-300"
+					>
+						<Pen /> Editer
+					</a>					
+				{/if}
 
 			</p>
 
