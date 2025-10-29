@@ -9,9 +9,7 @@
 		bibleRefEquals,
 		bibleRefToString,
 		bibleRefToHash,
-
 		bibleRefToHref
-
 	} from '$lib/stores/userData';
 	import { MessageCircleWarning, MessageCircleX, Share2, Star } from '@lucide/svelte';
 	import { getCachedResponse, setCachedResponse } from '$lib/stores/explorerCache';

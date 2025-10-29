@@ -1,5 +1,5 @@
 import { writable, type Writable, type Readable, readable, derived } from 'svelte/store';
-import { UserManager, WebStorageStateStore, User } from 'oidc-client-ts';
+import { UserManager, WebStorageStateStore, type User } from 'oidc-client-ts';
 import { browser } from '$app/environment';
 
 let userManager: UserManager;
@@ -19,10 +19,10 @@ if (browser) {
 
 	userManager = new UserManager(settings);
 	user = writable<User | null>(null);
-	isAdmin = derived(user, ($user)=>{
+	isAdmin = derived(user, ($user) => {
 		const roles: Array<string> = <Array<string>>$user?.profile?.roles || [];
-		return roles.includes("admin")
-	} )
+		return roles.includes('admin');
+	});
 
 	// Load user on init
 	userManager.getUser().then((loadedUser) => {

@@ -72,14 +72,17 @@
 				.then(() => console.log('Successful share'))
 				.catch((error) => console.log('Error sharing', error));
 		} else if (navigator.clipboard) {
-			navigator.clipboard.writeText(selectedImage.imageUrl)
+			navigator.clipboard
+				.writeText(selectedImage.imageUrl)
 				.then(() => toast('Lien copié dans le presse-papiers !'))
 				.catch((error) => console.log('Error copying text', error));
 		} else {
-			toast('Le partage n\'est pas supporté par votre navigateur. Copiez le lien : ' + selectedImage.imageUrl);
+			toast(
+				"Le partage n'est pas supporté par votre navigateur. Copiez le lien : " +
+					selectedImage.imageUrl
+			);
 		}
 	}
-
 </script>
 
 <svelte:head>

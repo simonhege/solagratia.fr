@@ -104,7 +104,7 @@
 				{#each data.verses as verse, i (i)}
 					<span
 						id={'v' + (i + 1)}
-						class="rounded px-1strong"
+						class="px-1strong rounded"
 						class:bg-primary-strong={isFavorite(i + 1) && highlighted.has(i + 1)}
 						class:bg-secondary-text={isFavorite(i + 1) && !highlighted.has(i + 1)}
 						class:bg-primary={!isFavorite(i + 1) && highlighted.has(i + 1)}

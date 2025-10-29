@@ -15,7 +15,6 @@
 	import { bibleRefToString } from '$lib/stores/userData';
 
 	let { data }: PageProps = $props();
-
 </script>
 
 <svelte:head>
@@ -28,7 +27,9 @@
 			<p class="text-primary-text mb-4 text-2xl leading-relaxed font-normal md:text-3xl">
 				« {data.verses.text} »
 			</p>
-			<p class="text-secondary-text mb-4 text-lg">La Bible, {bibleRefToString(data.verses.reference)}</p>
+			<p class="text-secondary-text mb-4 text-lg">
+				La Bible, {bibleRefToString(data.verses.reference)}
+			</p>
 			<p class="text-md text-secondary-text italic">
 				{data.short}
 			</p>
