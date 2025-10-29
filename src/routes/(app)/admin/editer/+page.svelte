@@ -2,7 +2,7 @@
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { user } from '$lib/stores/user';
 	import { bibleRefToString } from '$lib/stores/userData';
-	import { BookmarkCheck, NotebookPen, Pen, Trash2, Undo } from '@lucide/svelte';
+	import { BookmarkCheck, NotebookPen, Pen } from '@lucide/svelte';
 
 	let meditations = $state<any[]>([]);
 	$effect(() => {
