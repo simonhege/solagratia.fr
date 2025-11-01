@@ -1,13 +1,26 @@
 import { browser } from '$app/environment';
-import type { BibleRef } from './userData';
+import { BibleExcerpt } from '$lib/models/bible';
 
-type ExplorerResponse = {
-	verses: Array<{
-		text: string;
-		reference: BibleRef;
-	}>;
-	timestamp: number;
-};
+class ExplorerResponse {
+	constructor(
+		public verses: BibleExcerpt[],
+		public timestamp: number
+	) {}
+
+	static fromJSON(json: any) {
+		return new ExplorerResponse(
+			json.verses.map((v: any) => BibleExcerpt.fromJSON(v)),
+			json.timestamp
+		);
+	}
+
+	toJSON(): any {
+		return {
+			verses: this.verses.map((v: BibleExcerpt) => v.toJSON()),
+			timestamp: this.timestamp
+		};
+	}
+}
 
 const CACHE_DURATION = 1000 * 60 * 60; // 1 hour
 
@@ -18,7 +31,7 @@ export function getCachedResponse(question: string): ExplorerResponse | null {
 		const cached = sessionStorage.getItem(`explorer:${question}`);
 		if (!cached) return null;
 
-		const response = JSON.parse(cached) as ExplorerResponse;
+		const response = ExplorerResponse.fromJSON(JSON.parse(cached));
 
 		// Check if cache is still valid (within CACHE_DURATION)
 		if (Date.now() - response.timestamp > CACHE_DURATION) {
@@ -32,19 +45,13 @@ export function getCachedResponse(question: string): ExplorerResponse | null {
 	}
 }
 
-export function setCachedResponse(
-	question: string,
-	verses: Array<{ text: string; reference: BibleRef }>
-) {
+export function setCachedResponse(question: string, verses: BibleExcerpt[]) {
 	if (!browser) return;
 
-	const response: ExplorerResponse = {
-		verses,
-		timestamp: Date.now()
-	};
+	const response = new ExplorerResponse(verses, Date.now());
 
 	try {
-		sessionStorage.setItem(`explorer:${question}`, JSON.stringify(response));
+		sessionStorage.setItem(`explorer:${question}`, JSON.stringify(response.toJSON()));
 	} catch {
 		// Handle storage errors (e.g., quota exceeded) silently
 		try {

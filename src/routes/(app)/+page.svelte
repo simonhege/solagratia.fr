@@ -12,7 +12,6 @@
 	} from '@lucide/svelte';
 	import { user } from '$lib/stores/user';
 	import type { PageProps } from './$types';
-	import { bibleRefToString } from '$lib/stores/userData';
 
 	let { data }: PageProps = $props();
 </script>
@@ -25,13 +24,13 @@
 	<div class="w-full max-w-3xl text-center">
 		<div class="mb-6 rounded-lg bg-white p-8 shadow-lg">
 			<p class="text-primary-text mb-4 text-2xl leading-relaxed font-normal md:text-3xl">
-				« {data.verses.text} »
+				« {data.meditation.verses.text} »
 			</p>
 			<p class="text-secondary-text mb-4 text-lg">
-				La Bible, {bibleRefToString(data.verses.reference)}
+				La Bible, {data.meditation.verses.reference.toString()}
 			</p>
 			<p class="text-md text-secondary-text italic">
-				{data.short}
+				{data.meditation.short}
 			</p>
 			<div class="mt-6 flex justify-center space-x-4 border-t border-gray-200 pt-4">
 				<span class="font-medium text-gray-600">Partager :</span>
@@ -66,7 +65,7 @@
 		</div>
 
 		<a
-			href="/se-ressourcer/{data.slug}"
+			href="/se-ressourcer/{data.meditation.slug}"
 			class="bg-primary hover:bg-primary-strong mb-4 inline-flex items-center rounded-md px-8 py-3 text-lg font-semibold text-white transition duration-300"
 		>
 			<GlassWater class="mr-2" /> Découvrir ce texte en profondeur

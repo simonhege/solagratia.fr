@@ -1,62 +1,8 @@
 import { readonly, writable } from 'svelte/store';
 import { user } from '$lib/stores/user';
 import { browser } from '$app/environment';
-
-export type BibleRef = {
-	bookCode: string;
-	bookName: string;
-	chapter: number;
-	verseStart: number;
-	verseEnd: number;
-};
-
-export function bibleRefToString(ref: BibleRef): string {
-	const bookName = ref.bookName ? ref.bookName : ref.bookCode;
-	return `${bookName} ${ref.chapter}.${ref.verseStart}${ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : ''}`;
-}
-
-export function bibleRefToHash(ref: BibleRef): string {
-	return `${ref.bookCode}/${ref.chapter}/${ref.verseStart}${ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : ''}`;
-}
-
-export function bibleRefToHref(ref: BibleRef): string {
-	return `/bible/${ref.bookCode}/${ref.chapter}#${ref.verseStart}${ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : ''}`;
-}
-
-export function bibleRefEquals(a: BibleRef, b: BibleRef): boolean {
-	return (
-		a.bookCode === b.bookCode &&
-		a.chapter === b.chapter &&
-		a.verseStart === b.verseStart &&
-		a.verseEnd === b.verseEnd
-	);
-}
-
-type Favorite = {
-	ref: BibleRef;
-	createdAt: string;
-};
-
-type Note = {
-	id: string;
-	createdAt: string;
-	ref: BibleRef;
-	content: string;
-};
-
-type Exploration = {
-	id: string;
-	createdAt: string;
-	question: string;
-	verses: BibleRef[];
-};
-
-type UserData = {
-	id: string;
-	favorites: Favorite[];
-	notes: Note[];
-	explorations: Exploration[];
-};
+import type { BibleExcerpt, BibleRef } from '$lib/models/bible';
+import { Favorite, UserData } from '$lib/models/user';
 
 const URL = import.meta.env.VITE_SG_API + '/users/me';
 
@@ -92,39 +38,40 @@ if (browser) {
 				return response.json();
 			})
 			.then((v) => {
+				let userData: UserData;
 				if (v == null) {
-					v = {
-						id: $user?.profile.sub,
-						favorites: [],
-						notes: [],
-						explorations: []
-					};
+					userData = new UserData($user?.profile.sub, [], [], []);
+				} else {
+					userData = UserData.fromJSON(v);
 				}
-				userDataWritable.set(v);
+				userDataWritable.set(userData);
 			});
 	});
 
 	userData.subscribe((v) => (content = v));
 }
 
+function isFavorite(favorites: Favorite[] | undefined, ref: BibleRef) {
+	return favorites && favorites.some((fav) => ref.equals(fav.ref));
+}
+
 function addFavorite(ref: BibleRef) {
-	content?.favorites.push({
-		ref: ref,
-		createdAt: new Date().toISOString()
-	});
+	content?.favorites.push(new Favorite(ref));
 	const req = new Request(URL, {
 		method: 'PUT',
 		headers: {
 			Authorization: 'Bearer ' + access_token,
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify(content)
+		body: JSON.stringify(content?.toJSON())
 	});
 	fetch(req).then((response) => {
+		console.log('PUT request completed', response);
 		if (!response.ok) {
 			throw new Error(`HTTP error! Status: ${response.status}`);
 		}
 	});
+	console.log('User data updated, added', ref, content);
 	userDataWritable.set(content);
 }
 
@@ -132,7 +79,7 @@ function removeFavorite(ref: BibleRef) {
 	if (content == null) {
 		return;
 	}
-	content.favorites = content.favorites.filter((fav) => !bibleRefEquals(fav.ref, ref));
+	content.favorites = content.favorites.filter((fav) => !fav.ref.equals(ref));
 
 	const req = new Request(import.meta.env.VITE_SG_API + '/users/me/favorites', {
 		method: 'POST',
@@ -140,16 +87,17 @@ function removeFavorite(ref: BibleRef) {
 			'Content-Type': 'application/json',
 			Authorization: 'Bearer ' + access_token
 		},
-		body: JSON.stringify({ action: 'remove', reference: ref })
+		body: JSON.stringify({ action: 'remove', reference: ref.toJSON() })
 	});
 	fetch(req).then((res) => {
 		if (res.ok) {
-			console.log('Favorite verse removed', ref);
+			console.log('Favorite verse removed (request completed)', ref);
 		} else {
 			console.error('Failed to remove favorite verse', ref);
 		}
 	});
+	console.log('User data updated, removed', ref, content);
 	userDataWritable.set(content);
 }
 
-export { userData, addFavorite, removeFavorite };
+export { userData, addFavorite, removeFavorite, isFavorite };

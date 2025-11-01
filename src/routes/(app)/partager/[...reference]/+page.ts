@@ -1,5 +1,6 @@
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
+import { BibleExcerptImage } from '$lib/models/bible';
 
 export const prerender = false;
 
@@ -13,5 +14,7 @@ export const load: PageLoad = async ({ fetch, params }) => {
 
 	const req = new Request(import.meta.env.VITE_SG_API + '/image/' + params.reference);
 	const res = await fetch(req);
-	return await res.json();
+	return {
+		image: BibleExcerptImage.fromJSON(await res.json())
+	};
 };

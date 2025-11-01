@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { MeditationSummary } from '$lib/models/meditation';
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { user } from '$lib/stores/user';
-	import { bibleRefToString } from '$lib/stores/userData';
 	import { BookmarkCheck, NotebookPen, Pen } from '@lucide/svelte';
 
-	let meditations = $state<any[]>([]);
+	let meditations = $state<MeditationSummary[]>([]);
 	$effect(() => {
 		getAll();
 	});
@@ -17,7 +17,7 @@
 		});
 		if (raw.ok) {
 			const jsonData: any[] = await raw.json();
-			meditations = jsonData;
+			meditations = jsonData.map((v: any) => MeditationSummary.fromJSON(v));
 		} else {
 			console.error(`HTTP error! Status: ${raw.status}`);
 		}
@@ -42,22 +42,15 @@
 				{#each meditations as meditation}
 					<tr>
 						<td>
-							{#if meditation.status === 'active'}
+							{#if meditation.isActive()}
 								<BookmarkCheck />
 							{:else}
 								<NotebookPen class="text-primary" />
 							{/if}
 						</td>
-						<td
-							>{new Date(meditation.publicationDate).toLocaleDateString('fr-FR', {
-								weekday: 'long',
-								day: 'numeric',
-								month: 'long',
-								year: 'numeric'
-							})}</td
-						>
+						<td>{meditation.formattedDate()}</td>
 						<td title={meditation.short}>{meditation.title}</td>
-						<td title={meditation.verses.text}>{bibleRefToString(meditation.verses.reference)}</td>
+						<td title={meditation.verses.text}>{meditation.verses.reference.toString()}</td>
 						<td>
 							<a
 								href={'/admin/editer/' + meditation.slug}

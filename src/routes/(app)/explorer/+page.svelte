@@ -1,20 +1,12 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { user } from '$lib/stores/user';
-	import {
-		userData,
-		addFavorite,
-		removeFavorite,
-		type BibleRef,
-		bibleRefEquals,
-		bibleRefToString,
-		bibleRefToHash,
-		bibleRefToHref
-	} from '$lib/stores/userData';
+	import { isFavorite, addFavorite, removeFavorite, userData } from '$lib/stores/userData';
 	import { MessageCircleWarning, MessageCircleX, Share2, Star } from '@lucide/svelte';
 	import { getCachedResponse, setCachedResponse } from '$lib/stores/explorerCache';
 	import { goto } from '$app/navigation';
-	import type { PageProps } from '../$types';
+	import type { PageProps } from './$types';
+	import { BibleExcerpt } from '$lib/models/bible';
 
 	let { data }: PageProps = $props();
 
@@ -55,12 +47,7 @@
 		'Dieu et le travail'
 	]).slice(0, 6);
 
-	type verse = {
-		text: string;
-		reference: BibleRef;
-	};
-
-	let verses: verse[] = $state([]);
+	let verses: BibleExcerpt[] = $state([]);
 
 	function setUrlQuestion(q: string) {
 		const url = new URL(window.location.href);
@@ -115,7 +102,7 @@
 				return response.json();
 			})
 			.then((response) => {
-				verses = response.verses;
+				verses = response.verses?.map((v: any) => BibleExcerpt.fromJSON(v));
 				if (verses == null || verses.length == 0) {
 					noAnswer = true;
 				} else {
@@ -130,11 +117,6 @@
 			.finally(() => {
 				loading = false;
 			});
-	}
-
-	function isFavorite(reference: BibleRef): boolean {
-		if (!$userData) return false;
-		return $userData.favorites.some((fav) => bibleRefEquals(fav.ref, reference));
 	}
 </script>
 
@@ -225,14 +207,11 @@
 					<div class="mb-4">
 						<p class="border-primary mb-1 border-l-2 pl-2 lg:text-xl">{verse.text}</p>
 						<div class="text-primary-text flex gap-4 text-sm lg:text-lg">
-							<a
-								class="hover:text-primary mr-auto hover:underline"
-								href={bibleRefToHref(verse.reference)}
-							>
-								{bibleRefToString(verse.reference)}
+							<a class="hover:text-primary mr-auto hover:underline" href={verse.reference.toHref()}>
+								{verse.reference.toString()}
 							</a>
 							{#if $user}
-								{#if isFavorite(verse.reference)}
+								{#if isFavorite($userData?.favorites, verse.reference)}
 									<button
 										class="text-primary cursor-pointer"
 										onclick={() => removeFavorite(verse.reference)}
@@ -248,7 +227,7 @@
 									</button>
 								{/if}
 							{/if}
-							<a class="hover:text-primary" href={'/partager/' + bibleRefToHash(verse.reference)}>
+							<a class="hover:text-primary" href={'/partager/' + verse.reference.toHash()}>
 								<Share2 />
 							</a>
 						</div>

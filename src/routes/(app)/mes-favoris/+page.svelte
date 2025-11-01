@@ -1,16 +1,11 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { user } from '$lib/stores/user';
-	import {
-		bibleRefEquals,
-		bibleRefToHash,
-		bibleRefToHref,
-		bibleRefToString,
-		removeFavorite,
-		type BibleRef
-	} from '$lib/stores/userData';
+	import { removeFavorite } from '$lib/stores/userData';
 	import { Share2, Trash2 } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
+	import { BibleExcerpt, type BibleRef } from '$lib/models/bible';
+	import { Favorite } from '$lib/models/user';
 
 	$effect(() => {
 		// Ensure user is loaded
@@ -20,12 +15,7 @@
 		}
 	});
 
-	type verse = {
-		text: string;
-		reference: BibleRef;
-	};
-
-	var favorites: verse[] = $state([]);
+	var favorites: BibleExcerpt[] = $state([]);
 
 	$effect(() => {
 		loadFavorites()
@@ -46,11 +36,11 @@
 		});
 		const res = await fetch(req);
 		const data = await res.json();
-		return data;
+		return data.map((f: any) => BibleExcerpt.fromJSON(f));
 	}
 
 	function removeFav(ref: BibleRef) {
-		favorites = favorites.filter((fav) => !bibleRefEquals(fav.reference, ref));
+		favorites = favorites.filter((fav) => !fav.reference.equals(ref));
 
 		removeFavorite(ref);
 	}
@@ -64,11 +54,8 @@
 				<div class="mb-4">
 					<p class="border-primary mb-1 border-l-2 pl-2 lg:text-xl">{verse.text}</p>
 					<div class="text-primary-text flex gap-4 text-sm lg:text-lg">
-						<a
-							class="hover:text-primary mr-auto hover:underline"
-							href={bibleRefToHref(verse.reference)}
-						>
-							{bibleRefToString(verse.reference)}
+						<a class="hover:text-primary mr-auto hover:underline" href={verse.reference.toHref()}>
+							{verse.reference.toString()}
 						</a>
 						<button
 							class="hover:text-primary cursor-pointer"
@@ -76,7 +63,7 @@
 						>
 							<Trash2 />
 						</button>
-						<a class="hover:text-primary" href={'/partager/' + bibleRefToHash(verse.reference)}>
+						<a class="hover:text-primary" href={'/partager/' + verse.reference.toHash()}>
 							<Share2 />
 						</a>
 					</div>

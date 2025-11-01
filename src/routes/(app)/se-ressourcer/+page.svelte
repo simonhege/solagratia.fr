@@ -1,20 +1,8 @@
 <script lang="ts">
-	import type { PageProps } from '../$types';
-	import { bibleRefToString } from '$lib/stores/userData';
+	import type { PageProps } from './$types';
 	import PageTitle from '$lib/PageTitle.svelte';
 
 	let { data }: PageProps = $props();
-
-	function formatDate(dateStr: string): string {
-		const dateObj = new Date(dateStr);
-		const options: Intl.DateTimeFormatOptions = {
-			weekday: 'long',
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric'
-		};
-		return dateObj.toLocaleDateString('fr-FR', options);
-	}
 </script>
 
 <div class="container mx-auto max-w-7xl p-2">
@@ -25,14 +13,14 @@
 				<div class="p-6">
 					<div class="mb-3">
 						<span class="text-sm text-gray-500 lg:text-base">
-							{formatDate(meditation.publicationDate)}
+							{meditation.formattedDate()}
 						</span>
 					</div>
 					<h3
 						class="hover:text-primary mb-2 text-xl font-semibold text-gray-800 transition duration-200 lg:text-2xl"
 					>
 						<a href={'/se-ressourcer/' + meditation.slug}>
-							{bibleRefToString(meditation.verses.reference)} : {meditation.title}
+							{meditation.verses.reference.toString()} : {meditation.title}
 						</a>
 					</h3>
 					{#if meditation.imageUrl}
@@ -41,7 +29,7 @@
 								src={meditation.imageUrl}
 								alt={meditation.verses.text +
 									' - La Bible, ' +
-									bibleRefToString(meditation.verses.reference)}
+									meditation.verses.reference.toString()}
 								class="mb-4 w-full rounded-md object-cover"
 							/>
 						</a>

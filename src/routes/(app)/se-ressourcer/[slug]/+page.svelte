@@ -1,77 +1,53 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
-	import {
-		userData,
-		addFavorite,
-		bibleRefToHash,
-		bibleRefToString,
-		removeFavorite,
-		type BibleRef,
-		bibleRefEquals,
-		bibleRefToHref
-	} from '$lib/stores/userData';
+	import { isFavorite, addFavorite, removeFavorite, userData } from '$lib/stores/userData';
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { user, isAdmin } from '$lib/stores/user';
 	import { Pen, Share2, Star } from '@lucide/svelte';
 
 	let { data }: PageProps = $props();
-
-	const dateText = new Date(data.publicationDate).toLocaleDateString('fr-FR', {
-		weekday: 'long',
-		day: 'numeric',
-		month: 'long',
-		year: 'numeric'
-	});
-	// first character to uppercase
-	const date = dateText.charAt(0).toUpperCase() + dateText.slice(1);
-	let paragraphs = data.full.split('\n\n');
-
-	const title = data.title ? data.title : bibleRefToString(data.verses.reference);
-
-	function isFavorite(reference: BibleRef): boolean {
-		if (!$userData) return false;
-		return $userData.favorites.some((fav) => bibleRefEquals(fav.ref, reference));
-	}
 </script>
 
 <main class="flex flex-grow items-center justify-center">
 	<div class="container mx-auto max-w-3xl p-2">
-		<PageTitle title={date + ' - ' + title} />
+		<PageTitle title={data.meditation.formattedDate() + ' - ' + data.meditation.title} />
 
 		<div class="mb-4 rounded-xl bg-white p-2 shadow-lg md:p-4 lg:p-8">
 			<div class="prose lg:prose-xl">
 				<img
-					src={data.imageUrl}
-					alt={data.verses.text + ' - La Bible, ' + bibleRefToString(data.verses.reference)}
+					src={data.meditation.imageUrl}
+					alt={data.meditation.verses.text +
+						' - La Bible, ' +
+						data.meditation.verses.reference.toString()}
 					class="mb-4 w-full rounded-md object-cover"
 				/>
 
-				{#each paragraphs as paragraph}
+				{#each data.meditation.paragraphs() as paragraph}
 					<p class="text-md text-secondary-text mb-4">{paragraph}</p>
 				{/each}
 				<p class="mb-3 text-2xl leading-relaxed font-normal md:text-3xl">
-					« {data.verses.text} »
+					« {data.meditation.verses.text} »
 				</p>
 				<p class="mb-4 text-right text-lg">
 					La Bible,
 					<a
 						class="hover:text-primary mr-auto hover:underline"
-						href={bibleRefToHref(data.verses.reference)}
+						href={data.meditation.verses.reference.toHref()}
 					>
-						{bibleRefToString(data.verses.reference)}
+						{data.meditation.verses.reference.toString()}
 					</a>
 					{#if $user}
-						{#if isFavorite(data.verses.reference)}
+						{#if isFavorite($userData?.favorites, data.meditation.verses.reference)}
 							<button
 								class="text-primary inline-block cursor-pointer"
-								onclick={() => removeFavorite(data.verses.reference)}
+								onclick={() => removeFavorite(data.meditation.verses.reference)}
 							>
 								<Star class="fill-primary hover:fill-none" />
 							</button>
 						{:else}
 							<button
 								class="hover:text-primary inline-block cursor-pointer"
-								onclick={() => addFavorite(data.verses.reference)}
+								onclick={() => addFavorite(data.meditation.verses.reference)}
 							>
 								<Star class="hover:fill-primary" />
 							</button>
@@ -82,7 +58,7 @@
 
 			<p class="mt-6 text-center">
 				<a
-					href={'/partager/' + bibleRefToHash(data.verses.reference)}
+					href={'/partager/' + data.meditation.verses.reference.toHash()}
 					class="bg-primary hover:bg-primary-strong mb-4 inline-flex items-center rounded-md px-8 py-3 text-lg font-semibold text-white transition duration-300"
 				>
 					<Share2 /> Partager ce verset
@@ -90,7 +66,7 @@
 
 				{#if $isAdmin}
 					<a
-						href={'/admin/editer/' + data.slug}
+						href={'/admin/editer/' + data.meditation.slug}
 						class="bg-primary hover:bg-primary-strong mb-4 inline-flex items-center rounded-md px-8 py-3 text-lg font-semibold text-white transition duration-300"
 					>
 						<Pen /> Editer
@@ -98,21 +74,18 @@
 				{/if}
 			</p>
 
-			{#if data.seeAlso.length > 0}
+			{#if data.meditation.seeAlso.length > 0}
 				<h2 class="mt-8 mb-4 text-2xl font-bold">A lire également</h2>
 				<hr class="mb-6 border-t border-gray-300" />
-				{#each data.seeAlso as verse (verse.reference)}
+				{#each data.meditation.seeAlso as verse (verse.reference)}
 					<div class="mb-4">
 						<p class="border-primary mb-1 border-l-2 pl-2 lg:text-xl">{verse.text}</p>
 						<div class="text-primary-text flex gap-4 text-sm lg:text-lg">
-							<a
-								class="hover:text-primary mr-auto hover:underline"
-								href={bibleRefToHref(verse.reference)}
-							>
-								{bibleRefToString(verse.reference)}
+							<a class="hover:text-primary mr-auto hover:underline" href={verse.reference.toHref()}>
+								{verse.reference.toString()}
 							</a>
 							{#if $user}
-								{#if isFavorite(verse.reference)}
+								{#if isFavorite($userData?.favorites, verse.reference)}
 									<button
 										class="text-primary cursor-pointer"
 										onclick={() => removeFavorite(verse.reference)}
@@ -128,7 +101,7 @@
 									</button>
 								{/if}
 							{/if}
-							<a class="hover:text-primary" href={'/partager/' + bibleRefToHash(verse.reference)}>
+							<a class="hover:text-primary" href={'/partager/' + verse.reference.toHash()}>
 								<Share2 />
 							</a>
 						</div>

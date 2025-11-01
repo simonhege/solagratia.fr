@@ -2,8 +2,8 @@
 	import { Share2 } from '@lucide/svelte';
 
 	import type { PageProps } from './$types';
-	import { bibleRefToString, type BibleRef } from '$lib/stores/userData';
 	import PageTitle from '$lib/PageTitle.svelte';
+	import type { BibleRef } from '$lib/models/bible';
 
 	type GeneratedImage = {
 		imageUrl: string;
@@ -19,9 +19,9 @@
 
 	let { data }: PageProps = $props();
 	const defaultImage: GeneratedImage = {
-		imageUrl: data.dataUrl ? data.dataUrl : data.url,
-		alt: data.text,
-		tags: [bibleRefToString(data.reference)]
+		imageUrl: data.image.dataUrl ? data.image.dataUrl : data.image.url,
+		alt: data.image.text,
+		tags: [data.image.reference.toString()]
 	};
 
 	let generatedImages: GeneratedImage[] = $state([]);
@@ -33,7 +33,7 @@
 
 	$effect(() => {
 		const payload: ShareRequestType = {
-			reference: data.reference,
+			reference: data.image.reference.toJSON(),
 			count: 4
 		};
 		const req = new Request(import.meta.env.VITE_SG_API + '/share', {
@@ -65,7 +65,7 @@
 		if (navigator.share) {
 			navigator
 				.share({
-					title: `${bibleRefToString(data.reference)} - Sola Gratia`,
+					title: `${data.image.reference.toString()} - Sola Gratia`,
 					text: selectedImage.alt,
 					url: selectedImage.imageUrl
 				})
@@ -85,12 +85,8 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Partager {bibleRefToString(data.reference)} - Sola Gratia</title>
-</svelte:head>
-
 <div class="container mx-auto max-w-5xl">
-	<PageTitle title={'Partager ' + bibleRefToString(data.reference)} />
+	<PageTitle title={'Partager ' + data.image.reference.toString()} />
 
 	<div
 		class="main-illustration-display mx-auto mb-12 max-w-2xl overflow-hidden rounded-xl bg-white shadow-2xl"
