@@ -24,7 +24,7 @@
 	<div class="w-full max-w-3xl text-center">
 		<div class="mb-6 rounded-lg bg-white p-8 shadow-lg">
 			<p class="text-primary-text mb-4 text-2xl leading-relaxed font-normal md:text-3xl">
-				« {data.meditation.verses.text} »
+				«&nbsp;{data.meditation.verses.text}&nbsp;»
 			</p>
 			<p class="text-secondary-text mb-4 text-lg">
 				La Bible, {data.meditation.verses.reference.toString()}

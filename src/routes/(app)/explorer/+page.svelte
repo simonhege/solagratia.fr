@@ -1,8 +1,8 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
-	import { user } from '$lib/stores/user';
+	import { isAdmin, user } from '$lib/stores/user';
 	import { isFavorite, addFavorite, removeFavorite, userData } from '$lib/stores/userData';
-	import { MessageCircleWarning, MessageCircleX, Share2, Star } from '@lucide/svelte';
+	import { BookmarkPlus, MessageCircleWarning, MessageCircleX, Share2, Star } from '@lucide/svelte';
 	import { getCachedResponse, setCachedResponse } from '$lib/stores/explorerCache';
 	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
@@ -230,6 +230,11 @@
 							<a class="hover:text-primary" href={'/partager/' + verse.reference.toHash()}>
 								<Share2 />
 							</a>
+							{#if $isAdmin}
+								<a class="hover:text-primary" href={'/admin/init/' + verse.reference.toHash()}>
+									<BookmarkPlus />
+								</a>
+							{/if}
 						</div>
 					</div>
 				{/each}

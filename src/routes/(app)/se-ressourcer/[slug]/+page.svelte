@@ -26,7 +26,7 @@
 					<p class="text-md text-secondary-text mb-4">{paragraph}</p>
 				{/each}
 				<p class="mb-3 text-2xl leading-relaxed font-normal md:text-3xl">
-					« {data.meditation.verses.text} »
+					«&nbsp;{data.meditation.verses.text}&nbsp;»
 				</p>
 				<p class="mb-4 text-right text-lg">
 					La Bible,

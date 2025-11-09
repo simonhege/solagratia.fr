@@ -1,5 +1,40 @@
 import { BibleExcerpt } from './bible';
 
+export type MeditationSummaryObject = {
+	id: string;
+	slug: string;
+	title: string;
+	verses: BibleExcerpt;
+	imageUrl: string;
+	status: MeditationStatus;
+	short: string;
+	publicationDate: string;
+	tags: string[];
+};
+
+export type MeditationObject = MeditationSummaryObject & {
+	full: string;
+	seeAlso: BibleExcerpt[];
+};
+
+export function computeSlug(m: MeditationSummaryObject) {
+	m.slug = generateSlug(m.title, m.publicationDate);
+}
+
+export function formattedDate(m: MeditationSummaryObject): string {
+	const text = new Date(m.publicationDate).toLocaleDateString('fr-FR', {
+		weekday: 'long',
+		day: 'numeric',
+		month: 'long',
+		year: 'numeric'
+	});
+	return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+export function paragraphs(m: MeditationObject): string[] {
+	return m.full.split('\n\n');
+}
+
 /**
  * Represents a concise summary of a meditation entry.
  *
@@ -151,6 +186,28 @@ export class Meditation extends MeditationSummary {
 	paragraphs(): string[] {
 		return this.full.split('\n\n');
 	}
+}
+
+function generateSlug(titleValue: string, dateIso?: string) {
+	if (!titleValue) return dateIso ? dateIso.slice(0, 10) : '';
+	const base = titleValue
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.replace(/[^a-zA-Z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '')
+		.toLowerCase();
+	if (dateIso) {
+		try {
+			const d = new Date(dateIso);
+			if (!Number.isNaN(d.getTime())) {
+				const datePart = d.toISOString().slice(0, 10);
+				return `${datePart}-${base}`;
+			}
+		} catch (e) {
+			// ignore
+		}
+	}
+	return base;
 }
 
 export enum MeditationStatus {

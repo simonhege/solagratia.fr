@@ -1,8 +1,8 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
-	import { user } from '$lib/stores/user';
+	import { isAdmin, user } from '$lib/stores/user';
 	import { removeFavorite } from '$lib/stores/userData';
-	import { Share2, Trash2 } from '@lucide/svelte';
+	import { BookmarkPlus, Share2, Trash2 } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
 	import { BibleExcerpt, type BibleRef } from '$lib/models/bible';
 	import { Favorite } from '$lib/models/user';
@@ -66,6 +66,11 @@
 						<a class="hover:text-primary" href={'/partager/' + verse.reference.toHash()}>
 							<Share2 />
 						</a>
+						{#if $isAdmin}
+							<a class="hover:text-primary" href={'/admin/init/' + verse.reference.toHash()}>
+								<BookmarkPlus />
+							</a>
+						{/if}
 					</div>
 				</div>
 			{/each}

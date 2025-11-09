@@ -3,6 +3,7 @@
 	import { user } from '$lib/stores/user';
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { goto } from '$app/navigation';
+	import { Trash2 } from '@lucide/svelte';
 
 	let { data }: PageProps = $props();
 
@@ -66,6 +67,24 @@
 		if (res.ok) {
 			await res.json();
 			goto('/se-ressourcer/' + meditation.slug);
+		}
+	}
+	async function deleteMeditation() {
+		if (!confirm('Etes-vous sûr de vouloir supprimer cette méditation ?')) {
+			return;
+		}
+
+		const res = await fetch(import.meta.env.VITE_SG_API + '/admin/meditations/' + updated.id, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + $user?.access_token
+			}
+		});
+
+		if (res.ok) {
+			await res.json();
+			goto('/admin/editer');
 		}
 	}
 </script>
@@ -146,7 +165,7 @@
 					<textarea
 						id="short"
 						bind:value={updated.short}
-						rows="2"
+						rows="4"
 						placeholder="Bref résumé de la méditation"
 						class="focus:border-primary focus:ring-primary mt-1 block w-full rounded-md border-gray-300 shadow-sm"
 					></textarea>
@@ -244,7 +263,7 @@
 				</div>
 
 				<fieldset class="mb-6">
-					<legend class="mb-2 text-sm font-medium text-gray-700">Statut</legend>
+					<legend class="mb-2 text-sm font-medium text-gray-700">Status</legend>
 					<div class="flex space-x-4">
 						<label class="inline-flex items-center">
 							<input
@@ -283,6 +302,13 @@
 						onclick={save}
 					>
 						Mettre à jour
+					</button>
+					<button
+						type="button"
+						class="hover:bg-primary-strong inline-flex justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm"
+						onclick={deleteMeditation}
+					>
+						<Trash2 class="mr-2" /> Supprimer
 					</button>
 				</div>
 			</div>
