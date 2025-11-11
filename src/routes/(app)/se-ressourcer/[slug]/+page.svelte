@@ -8,6 +8,23 @@
 	let { data }: PageProps = $props();
 </script>
 
+<svelte:head>
+	<meta property="og:title" content={data.meditation.formattedDate() + ' - ' + data.meditation.title} />
+	<meta property="og:type" content="article" />
+	<meta property="og:article:published_time" content={data.meditation.publicationDate.toISOString()} />
+	<meta property="og:image" content={data.meditation.imageUrl} />
+	<meta property="og:image:alt" content={data.meditation.verses.text +
+						' - La Bible, ' +
+						data.meditation.verses.reference.toString()} />
+	<meta property="og:url" content={'https://www.solagratia.fr/se-resourcer/' + data.meditation.slug} />
+	<meta property="og:site_name" content="Sola Gratia" />
+	<meta property="og:locale" content="fr_FR" />
+	<meta property="og:description" content={data.meditation.short} />
+	
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@solagratia_fr" />
+</svelte:head>
+
 <main class="flex flex-grow items-center justify-center">
 	<div class="container mx-auto max-w-3xl p-2">
 		<PageTitle title={data.meditation.formattedDate() + ' - ' + data.meditation.title} />
