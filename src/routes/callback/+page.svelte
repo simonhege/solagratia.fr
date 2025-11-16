@@ -15,7 +15,7 @@
 					'state',
 					user?.state
 				);
-				goto(user?.state['returnTo']);
+				goto((user?.state as { returnTo: string })?.returnTo || '/');
 			})
 			.catch((reason) => {
 				console.log('Signin callback failure', 'reason', reason);
