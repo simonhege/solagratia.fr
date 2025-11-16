@@ -64,8 +64,7 @@ jobs:
       
       - name: Install Scaleway CLI
         run: |
-          curl -o /usr/local/bin/scw -L "https://github.com/scaleway/scaleway-cli/releases/latest/download/scaleway-cli_linux_amd64"
-          chmod +x /usr/local/bin/scw
+          curl -s https://raw.githubusercontent.com/scaleway/scaleway-cli/master/scripts/get.sh | sh
           scw version
       
       - name: Deploy to Scaleway Serverless Container
