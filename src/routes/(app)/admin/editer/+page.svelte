@@ -49,8 +49,18 @@
 							{/if}
 						</td>
 						<td>{meditation.formattedDate()}</td>
-						<td title={meditation.short}>{meditation.title}</td>
-						<td title={meditation.verses.text}>{meditation.verses.reference.toString()}</td>
+						<td title={meditation.short}>
+							<a href={'/se-ressourcer/' + meditation.slug} class="hover:underline"
+								>
+								{meditation.title}
+							</a>
+						</td>
+						<td title={meditation.verses.text}>
+							<a href={meditation.verses.reference.toHref()} class="hover:underline"
+								>
+							{meditation.verses.reference.toString()}
+							</a>
+						</td>
 						<td>
 							<a
 								href={'/admin/editer/' + meditation.slug}
