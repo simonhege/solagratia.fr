@@ -38,7 +38,7 @@
 		"vite": "^7.3.0"
 	},
 	"dependencies": {
-		"@lucide/svelte": "^0.561.0",
+		"@lucide/svelte": "^0.562.0",
 		"oidc-client-ts": "^3.4.1"
 	}
 }
