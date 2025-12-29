@@ -10,7 +10,7 @@
 
 	let { data }: PageProps = $props();
 
-	let question = $state(data.question);
+	let question = $state<string>(data.question);
 	let loading = $state(false);
 	let displayError = $state(false);
 	let noAnswer = $state(false);
@@ -20,8 +20,8 @@
 	$effect(() => {
 		if (isInitialLoad && data.question) {
 			handleQuestion(null);
-			isInitialLoad = false;
 		}
+		isInitialLoad = false;
 	});
 
 	function shuffle(array: string[]): string[] {
