@@ -1,7 +1,7 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { user } from '$lib/stores/user';
-	import { Sparkles } from '@lucide/svelte';
+	import { Sparkles, Trash2 } from '@lucide/svelte';
 
 	type Background = {
 		name: string;
@@ -14,6 +14,7 @@
 	let isLoading = $state(true);
 	let error = $state('');
 	let searchQuery = $state('');
+	let deletingName = $state<string | null>(null);
 
 	$effect(() => {
 		getAll();
@@ -53,6 +54,33 @@
 				bg.keywords?.some((kw) => kw.toLowerCase().includes(query))
 		);
 	});
+
+	async function deleteBackground(name: string) {
+		if (!confirm(`Êtes-vous sûr de vouloir supprimer l'arrière-plan "${name}" ?`)) {
+			return;
+		}
+
+		deletingName = name;
+		try {
+			const raw = await fetch(import.meta.env.VITE_SG_API + '/admin/backgrounds/' + encodeURIComponent(name), {
+				method: 'DELETE',
+				headers: {
+					Authorization: 'Bearer ' + $user?.access_token
+				}
+			});
+			if (raw.ok) {
+				backgrounds = backgrounds.filter((bg) => bg.name !== name);
+			} else {
+				const errorData = await raw.json().catch(() => ({}));
+				alert(`Erreur lors de la suppression: ${errorData.message || raw.status}`);
+			}
+		} catch (err) {
+			console.error('Error deleting background:', err);
+			alert('Erreur lors de la suppression');
+		} finally {
+			deletingName = null;
+		}
+	}
 </script>
 
 <div class="container mx-auto max-w-7xl p-2">
@@ -67,7 +95,7 @@
 				class="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
 			/>
 			<a
-				href="/admin/backgrounds/generer"
+				href="/admin/backgrounds/generer{searchQuery.trim() ? '?text=' + encodeURIComponent(searchQuery.trim()) : ''}"
 				class="bg-primary hover:bg-primary-strong inline-flex items-center justify-center rounded-md px-4 py-2 text-white transition duration-300"
 			>
 				<Sparkles class="mr-2" size={18} />
@@ -104,6 +132,18 @@
 								class="h-full w-full object-cover transition-transform group-hover:scale-105"
 								loading="lazy"
 							/>
+							<button
+								onclick={() => deleteBackground(background.name)}
+								disabled={deletingName === background.name}
+								class="absolute right-2 top-2 rounded-full bg-red-500 p-2 text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+								title="Supprimer"
+							>
+								{#if deletingName === background.name}
+									<span class="block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+								{:else}
+									<Trash2 size={16} />
+								{/if}
+							</button>
 						</div>
 						<div class="p-3">
 							<h3 class="mb-1 font-semibold text-gray-900">{background.name}</h3>
