@@ -15,6 +15,8 @@
 		name: string;
 		keywords: string[];
 		description: string;
+		semanticDescription: string;
+		vector: number[];
 	};
 
 	// Step management
@@ -41,7 +43,7 @@
 
 	// Step 1: Generate prompt proposals from input text
 	async function generatePrompts() {
-		if (!inputText.trim()) return;
+		if (!inputText.trim() || isGeneratingPrompts) return;
 
 		isGeneratingPrompts = true;
 		error = '';
@@ -85,7 +87,7 @@
 
 	// Step 2 -> 3: Generate image from selected/edited prompt
 	async function generateImage() {
-		if (!editedPrompt.trim()) return;
+		if (!editedPrompt.trim() || isGeneratingImage) return;
 
 		isGeneratingImage = true;
 		error = '';
@@ -120,7 +122,7 @@
 
 	// Step 3 -> 4: Save the generated background
 	async function saveBackground() {
-		if (!generatedBackground) return;
+		if (!generatedBackground || isSaving) return;
 
 		isSaving = true;
 		error = '';
@@ -136,7 +138,9 @@
 					url: generatedBackground.url,
 					name: generatedBackground.name,
 					keywords: generatedBackground.keywords,
-					description: generatedBackground.description
+					description: generatedBackground.description,
+					semanticDescription: generatedBackground.semanticDescription,
+					vector: generatedBackground.vector
 				})
 			});
 
