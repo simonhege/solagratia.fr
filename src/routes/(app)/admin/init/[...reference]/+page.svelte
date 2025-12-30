@@ -1,13 +1,12 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
-	import { BookmarkPlus, Send, Share2, Star, WandSparkles } from '@lucide/svelte';
+	import { BookmarkPlus, Send, Share2, Star } from '@lucide/svelte';
 	import type { PageProps } from './$types';
 	import { isAdmin, user, userManager } from '$lib/stores/user';
 	import Generate from './Generate.svelte';
 	import {
 		computeSlug,
 		formattedDate,
-		Meditation,
 		MeditationStatus,
 		type MeditationObject
 	} from '$lib/models/meditation';
@@ -21,6 +20,7 @@
 
 	let mainIdeas = $state('');
 	let mainIdeasFeedback = $state('');
+	let mainIdeasLoading = $state(false);
 
 	$effect(() => {
 		if (!$user) {
@@ -28,7 +28,9 @@
 		}
 
 		if (!mainIdeas) {
+			mainIdeasLoading = true;
 			generateMainIdeas('', '').then(() => {
+				mainIdeasLoading = false;
 				if (!meditation.imageUrl) {
 					generateImages();
 				}
@@ -44,6 +46,7 @@
 		slug: '',
 
 		title: '',
+		// svelte-ignore state_referenced_locally
 		verses: data.verses,
 		imageUrl: '',
 
@@ -212,6 +215,7 @@
 			<Generate
 				bind:content={mainIdeas}
 				bind:feedback={mainIdeasFeedback}
+				bind:loading={mainIdeasLoading}
 				generate={generateMainIdeas}
 				rows="5"
 				text="Générer les idées principales"
