@@ -94,10 +94,10 @@
 				{filteredBackgrounds().length} arrière-plan{filteredBackgrounds().length > 1 ? 's' : ''}
 				{#if searchQuery}sur {backgrounds.length}{/if}
 			</div>
-			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+			<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
 				{#each filteredBackgrounds() as background (background.url)}
 					<div class="group overflow-hidden rounded-lg border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
-						<div class="relative aspect-video overflow-hidden bg-gray-100">
+						<div class="relative aspect-square overflow-hidden bg-gray-100">
 							<img
 								src={background.url}
 								alt={background.name}

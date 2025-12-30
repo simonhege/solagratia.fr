@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { user } from '$lib/stores/user';
 	import { ArrowLeft, ArrowRight, Check, Loader2, Sparkles, Wand2 } from '@lucide/svelte';
@@ -19,8 +20,8 @@
 	// Step management
 	let currentStep = $state<1 | 2 | 3 | 4>(1);
 
-	// Step 1: Input text
-	let inputText = $state('');
+	// Step 1: Input text (pre-fill from URL param if present)
+	let inputText = $state(page.url.searchParams.get('text') ?? '');
 	let isGeneratingPrompts = $state(false);
 
 	// Step 2: Prompt proposals
@@ -292,11 +293,11 @@
 				Vérifiez l'image générée avant de l'enregistrer.
 			</p>
 
-			<div class="mb-4 overflow-hidden rounded-lg border border-gray-200">
+			<div class="mx-auto mb-4 max-w-md overflow-hidden rounded-lg border border-gray-200">
 				<img
 					src={generatedBackground.url}
 					alt={generatedBackground.name}
-					class="aspect-video w-full object-cover"
+					class="aspect-square w-full object-cover"
 				/>
 			</div>
 

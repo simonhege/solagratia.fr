@@ -262,7 +262,16 @@
 					</div>
 				{/each}
 			</div>
-			<Button text="Générer l'illustration" onclick={generateImages} />
+			<div class="flex flex-wrap gap-2">
+				<Button text="Générer l'illustration" onclick={generateImages} />
+				<a
+					href="/admin/backgrounds/generer?text={encodeURIComponent(data.verses.text)}"
+					target="_blank"
+					class="bg-secondary hover:bg-secondary/80 inline-flex items-center rounded-md px-4 py-2 text-white transition duration-300"
+				>
+					Créer un nouvel arrière-plan
+				</a>
+			</div>
 
 			<h3>Versets complémentaires</h3>
 
