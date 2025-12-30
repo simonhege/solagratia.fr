@@ -1,6 +1,7 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
 	import { user } from '$lib/stores/user';
+	import { Sparkles } from '@lucide/svelte';
 
 	type Background = {
 		name: string;
@@ -58,13 +59,20 @@
 	<PageTitle title="Gestion des arrière-plans" />
 
 	<div class="mb-12 rounded-xl bg-white p-2 shadow-lg md:p-4 lg:p-8">
-		<div class="mb-6">
+		<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 			<input
 				type="text"
 				bind:value={searchQuery}
 				placeholder="Rechercher par nom, description ou mot-clé..."
-				class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+				class="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
 			/>
+			<a
+				href="/admin/backgrounds/generer"
+				class="bg-primary hover:bg-primary-strong inline-flex items-center justify-center rounded-md px-4 py-2 text-white transition duration-300"
+			>
+				<Sparkles class="mr-2" size={18} />
+				Générer un arrière-plan
+			</a>
 		</div>
 
 		{#if isLoading}
