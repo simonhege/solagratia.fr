@@ -1,0 +1,125 @@
+<script lang="ts">
+	import PageTitle from '$lib/PageTitle.svelte';
+	import { user } from '$lib/stores/user';
+
+	type Background = {
+		name: string;
+		url: string;
+		keywords: string[];
+		description: string;
+	};
+
+	let backgrounds = $state<Background[]>([]);
+	let isLoading = $state(true);
+	let error = $state('');
+	let searchQuery = $state('');
+
+	$effect(() => {
+		getAll();
+	});
+
+	async function getAll() {
+		isLoading = true;
+		error = '';
+		try {
+			const raw = await fetch(import.meta.env.VITE_SG_API + '/admin/backgrounds', {
+				headers: {
+					Authorization: 'Bearer ' + $user?.access_token
+				}
+			});
+			if (raw.ok) {
+				const jsonData = await raw.json();
+				backgrounds = jsonData.backgrounds ?? [];
+			} else {
+				error = `Erreur HTTP: ${raw.status}`;
+				console.error(`HTTP error! Status: ${raw.status}`);
+			}
+		} catch (err) {
+			error = 'Erreur lors du chargement des arrière-plans';
+			console.error('Error fetching backgrounds:', err);
+		} finally {
+			isLoading = false;
+		}
+	}
+
+	let filteredBackgrounds = $derived(() => {
+		if (!searchQuery.trim()) return backgrounds;
+		const query = searchQuery.toLowerCase();
+		return backgrounds.filter(
+			(bg) =>
+				bg.name.toLowerCase().includes(query) ||
+				bg.description?.toLowerCase().includes(query) ||
+				bg.keywords?.some((kw) => kw.toLowerCase().includes(query))
+		);
+	});
+</script>
+
+<div class="container mx-auto max-w-7xl p-2">
+	<PageTitle title="Gestion des arrière-plans" />
+
+	<div class="mb-12 rounded-xl bg-white p-2 shadow-lg md:p-4 lg:p-8">
+		<div class="mb-6">
+			<input
+				type="text"
+				bind:value={searchQuery}
+				placeholder="Rechercher par nom, description ou mot-clé..."
+				class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+			/>
+		</div>
+
+		{#if isLoading}
+			<div class="flex items-center justify-center py-12">
+				<div class="text-gray-500">Chargement...</div>
+			</div>
+		{:else if error}
+			<div class="rounded-md bg-red-50 p-4 text-red-600">{error}</div>
+		{:else if filteredBackgrounds().length === 0}
+			<div class="py-8 text-center text-gray-500">
+				{#if searchQuery}
+					Aucun arrière-plan trouvé pour "{searchQuery}"
+				{:else}
+					Aucun arrière-plan disponible
+				{/if}
+			</div>
+		{:else}
+			<div class="mb-4 text-sm text-gray-500">
+				{filteredBackgrounds().length} arrière-plan{filteredBackgrounds().length > 1 ? 's' : ''}
+				{#if searchQuery}sur {backgrounds.length}{/if}
+			</div>
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+				{#each filteredBackgrounds() as background (background.url)}
+					<div class="group overflow-hidden rounded-lg border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
+						<div class="relative aspect-video overflow-hidden bg-gray-100">
+							<img
+								src={background.url}
+								alt={background.name}
+								class="h-full w-full object-cover transition-transform group-hover:scale-105"
+								loading="lazy"
+							/>
+						</div>
+						<div class="p-3">
+							<h3 class="mb-1 font-semibold text-gray-900">{background.name}</h3>
+							{#if background.description}
+								<p class="mb-2 line-clamp-2 text-sm text-gray-600" title={background.description}>
+									{background.description}
+								</p>
+							{/if}
+							{#if background.keywords && background.keywords.length > 0}
+								<div class="flex flex-wrap gap-1">
+									{#each background.keywords.slice(0, 5) as keyword}
+										<span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+											{keyword}
+										</span>
+									{/each}
+									{#if background.keywords.length > 5}
+										<span class="text-xs text-gray-400">+{background.keywords.length - 5}</span>
+									{/if}
+								</div>
+							{/if}
+						</div>
+					</div>
+				{/each}
+			</div>
+		{/if}
+	</div>
+</div>

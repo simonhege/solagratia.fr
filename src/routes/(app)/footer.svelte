@@ -21,7 +21,6 @@
 			{@render footer_extlink('Contact', 'mailto:simon@solagratia.fr')}
 			{#if $isAdmin}
 				{@render footer_link('Admin', '/admin')}
-				{@render footer_link('Editeur de méditations', '/admin/editer')}
 			{/if}
 		</nav>
 	</div>

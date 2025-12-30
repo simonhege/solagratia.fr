@@ -80,6 +80,21 @@
 <div class="container mx-auto max-w-7xl p-2">
 	<PageTitle title="Administration" />
 
+	<div class="mb-8 flex flex-wrap justify-center gap-4">
+		<a
+			href="/admin/editer"
+			class="bg-primary hover:bg-primary-strong inline-flex items-center rounded-md px-4 py-2 text-white transition duration-300"
+		>
+			Editeur de méditations
+		</a>
+		<a
+			href="/admin/backgrounds"
+			class="bg-primary hover:bg-primary-strong inline-flex items-center rounded-md px-4 py-2 text-white transition duration-300"
+		>
+			Gestion des arrière-plans
+		</a>
+	</div>
+
 	<h2 class="text-primary-text mb-8 text-center text-2xl font-bold md:text-3xl">Statistiques</h2>
 	{#if pageViewedStats && pageViewedStats.headers && pageViewedStats.values}
 		<div class="mb-12 rounded-xl bg-white p-2 shadow-lg md:p-4 lg:p-8">
