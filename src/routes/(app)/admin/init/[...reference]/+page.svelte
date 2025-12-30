@@ -1,6 +1,6 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
-	import { BookmarkPlus, Send, Share2, Star } from '@lucide/svelte';
+	import { BookmarkPlus, ImagePlus, Send, Share2, Star } from '@lucide/svelte';
 	import type { PageProps } from './$types';
 	import { isAdmin, user, userManager } from '$lib/stores/user';
 	import Generate from './Generate.svelte';
@@ -267,8 +267,9 @@
 				<a
 					href="/admin/backgrounds/generer?text={encodeURIComponent(data.verses.text)}"
 					target="_blank"
-					class="bg-secondary hover:bg-secondary/80 inline-flex items-center rounded-md px-4 py-2 text-white transition duration-300"
+					class="bg-primary hover:bg-primary-strong inline-flex items-center rounded-md px-4 py-2 text-white transition duration-300"
 				>
+					<ImagePlus class="mr-2" size={18} />
 					Créer un nouvel arrière-plan
 				</a>
 			</div>
