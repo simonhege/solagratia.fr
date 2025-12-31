@@ -20,15 +20,17 @@
 	};
 
 	// Mode: 'generate' or 'upload'
-	let mode = $state<'generate' | 'upload' | null>(null);
+	// If text is provided in URL, default to generate mode
+	const initialText = page.url.searchParams.get('text') ?? '';
+	let mode = $state<'generate' | 'upload' | null>(initialText ? 'generate' : null);
 
 	// Step management - steps differ by mode
-	// Generate: 1 (text) -> 2 (prompts) -> 3 (preview) -> 4 (success)
-	// Upload: 1 (upload) -> 2 (preview) -> 3 (success)
+	// Generate: 1 (text) -> 2 (prompts) -> 3 (success)
+	// Upload: 1 (upload) -> 2 (success)
 	let currentStep = $state(1);
 
 	// Generate mode: Input text (pre-fill from URL param if present)
-	let inputText = $state(page.url.searchParams.get('text') ?? '');
+	let inputText = $state(initialText);
 	let isGeneratingPrompts = $state(false);
 
 	// Generate mode: Prompt proposals
@@ -189,7 +191,7 @@
 	function reset() {
 		mode = null;
 		currentStep = 1;
-		inputText = page.url.searchParams.get('text') ?? '';
+		inputText = '';
 		promptProposals = [];
 		selectedProposalId = null;
 		editedPrompt = '';
