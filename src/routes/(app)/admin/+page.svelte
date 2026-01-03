@@ -1,154 +1,62 @@
 <script lang="ts">
 	import PageTitle from '$lib/PageTitle.svelte';
-	import { user } from '$lib/stores/user';
+	import { FilePenLine, Image, BarChart3, History, ArrowRight } from '@lucide/svelte';
 
-	type Stats = {
-		headers?: string[];
-		values?: Map<string, number[]>;
-	};
-	type VerseReference = {
-		bookCode: string;
-		bookName: string;
-		chapter: number;
-		verseStart: number;
-		verseEnd: number;
-	};
-	type Verse = {
-		text: string;
-		reference: VerseReference;
-	};
-	type HistoryItem = {
-		dateTime: string;
-		duration: number;
-		question: string;
-		verses: Verse[];
-	};
-	type HistoryResponse = {
-		items: HistoryItem[];
-	};
-
-	let inputPeriod = $state('day');
-	let pageViewedStats: Stats = $state({});
-	let historyItems: HistoryItem[] = $state([]);
-
-	$effect(() => {
-		getPageViewedStats(inputPeriod);
-		getExplorerHistory();
-	});
-
-	async function getPageViewedStats(period: string) {
-		const raw = await fetch(
-			import.meta.env.VITE_SG_API + '/admin/pageViewed/stats?period=' + period,
-			{
-				headers: {
-					Authorization: 'Bearer ' + $user?.access_token
-				}
-			}
-		);
-		if (raw.ok) {
-			const jsonData: Stats = await raw.json();
-			pageViewedStats = jsonData;
-		} else {
-			console.error(`HTTP error! Status: ${raw.status}`);
+	const menuItems = [
+		{
+			title: 'Éditeur de méditations',
+			description: 'Créer et modifier les méditations quotidiennes.',
+			href: '/admin/editer',
+			icon: FilePenLine
+		},
+		{
+			title: 'Arrière-plans',
+			description: 'Gérer les images de fond pour les versets et méditations.',
+			href: '/admin/backgrounds',
+			icon: Image
+		},
+		{
+			title: 'Statistiques',
+			description: "Visualiser les visites et l'engagement des utilisateurs.",
+			href: '/admin/statistiques',
+			icon: BarChart3
+		},
+		{
+			title: 'Historique',
+			description: "Consulter l'historique des recherches Explorer.",
+			href: '/admin/historique',
+			icon: History
 		}
-	}
-	async function getExplorerHistory() {
-		const raw = await fetch(import.meta.env.VITE_SG_API + '/admin/explorer/history', {
-			headers: {
-				Authorization: 'Bearer ' + $user?.access_token
-			}
-		});
-		if (raw.ok) {
-			const jsonData: HistoryResponse = await raw.json();
-			historyItems = jsonData.items;
-		} else {
-			console.error(`HTTP error! Status: ${raw.status}`);
-		}
-	}
-	function refString(ref: VerseReference): string {
-		return (
-			ref.bookName +
-			' ' +
-			ref.chapter +
-			'.' +
-			ref.verseStart +
-			(ref.verseEnd !== ref.verseStart ? '-' + ref.verseEnd : '')
-		);
-	}
+	];
 </script>
 
-<div class="container mx-auto max-w-7xl p-2">
+<div class="container mx-auto max-w-7xl p-4">
 	<PageTitle title="Administration" />
 
-	<div class="mb-8 flex flex-wrap justify-center gap-4">
-		<a
-			href="/admin/editer"
-			class="bg-primary hover:bg-primary-strong inline-flex items-center rounded-md px-4 py-2 text-white transition duration-300"
-		>
-			Editeur de méditations
-		</a>
-		<a
-			href="/admin/backgrounds"
-			class="bg-primary hover:bg-primary-strong inline-flex items-center rounded-md px-4 py-2 text-white transition duration-300"
-		>
-			Gestion des arrière-plans
-		</a>
-	</div>
-
-	<h2 class="text-primary-text mb-8 text-center text-2xl font-bold md:text-3xl">Statistiques</h2>
-	{#if pageViewedStats && pageViewedStats.headers && pageViewedStats.values}
-		<div class="mb-12 rounded-xl bg-white p-2 shadow-lg md:p-4 lg:p-8">
-			<table class="w-full table-auto">
-				<thead>
-					<tr>
-						<th></th>
-						{#each pageViewedStats.headers as header (header)}
-							<th>{header}</th>
-						{/each}
-					</tr>
-				</thead>
-				<tbody>
-					{#each Object.entries(pageViewedStats.values) as [page, values] (page)}
-						<tr class="hover:bg-tertiary-text text-center">
-							<td class="p-1 text-left">{page}</td>
-							{#each values as v}
-								<td>{v}</td>
-							{/each}
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</div>
-	{/if}
-
-	<h2 class="text-primary-text mb-8 text-center text-2xl font-bold md:text-3xl">Historique</h2>
-
-	<div class="mb-12 rounded-xl bg-white p-2 shadow-lg md:p-4 lg:p-8">
-		<table class="w-full table-auto">
-			<thead>
-				<tr>
-					<th>Date</th>
-					<th>Durée</th>
-					<th>Question</th>
-					<th>Versets</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each historyItems as item (item)}
-					<tr class="hover:bg-tertiary-text">
-						<td class="p-1">{new Date(item.dateTime).toISOString()}</td>
-						<td class="p-1">{(item.duration / 1000000000).toFixed(2)}s</td>
-						<td class="p-1">{item.question}</td>
-						<td class="p-1">
-							{#each item.verses as verse (verse.reference)}
-								<span class="m-1 rounded bg-gray-200 shadow-md" title={verse.text}>
-									{refString(verse.reference)}
-								</span>
-							{/each}
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
+	<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+		{#each menuItems as item}
+			<a
+				href={item.href}
+				class="group relative flex flex-col justify-between overflow-hidden rounded-xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-2 hover:ring-primary/50"
+			>
+				<div>
+					<div class="mb-4 inline-flex rounded-lg bg-bgstart p-3 text-primary">
+						<item.icon size={28} />
+					</div>
+					<h3 class="mb-2 text-xl font-bold text-primary-text group-hover:text-primary">
+						{item.title}
+					</h3>
+					<p class="text-secondary-text">
+						{item.description}
+					</p>
+				</div>
+				<div
+					class="mt-6 flex items-center justify-end text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+				>
+					<span class="mr-2 text-sm font-medium">Accéder</span>
+					<ArrowRight size={16} />
+				</div>
+			</a>
+		{/each}
 	</div>
 </div>
