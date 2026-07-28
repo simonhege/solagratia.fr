@@ -25,6 +25,6 @@
 		</nav>
 	</div>
 	<div class="text-secondary-text mt-6 text-center text-sm">
-		&copy; 2024-2025 Sola Gratia. Tous droits réservés.
+		&copy; 2024-2026 Sola Gratia. Tous droits réservés.
 	</div>
 </footer>
